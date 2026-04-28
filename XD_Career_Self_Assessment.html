@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PayPal XD Career Navigation</title>
+<style>
+:root {
+  --navy: #003087;
+  --blue: #0070BA;
+  --sky: #009CDE;
+  --bg: #F4F7FB;
+  --white: #FFFFFF;
+  --border: #DDE4EF;
+  --text: #1A2035;
+  --muted: #5E6E8A;
+  --light: #EBF3FB;
+  --green: #16A34A;
+  --amber: #D97706;
+  --red: #DC2626;
+  --radius: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; }
+
+/* ── HEADER ── */
+.header { background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 55%, var(--sky) 100%); padding: 18px 28px; display: flex; align-items: center; gap: 14px; position: sticky; top: 0; z-index: 200; box-shadow: 0 2px 12px rgba(0,48,135,.25); }
+.logo { background: #fff; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 12px; color: var(--blue); letter-spacing: -1px; flex-shrink: 0; }
+.header-text h1 { color: #fff; font-size: 16px; font-weight: 700; letter-spacing: -.2px; }
+.header-text p { color: rgba(255,255,255,.75); font-size: 12px; }
+.header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.btn { padding: 7px 14px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; transition: all .15s; }
+.btn-white { background: #fff; color: var(--navy); }
+.btn-white:hover { background: #e8f0fa; }
+.btn-ghost { background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.3); }
+.btn-ghost:hover { background: rgba(255,255,255,.25); }
+
+/* ── TAB NAV ── */
+.tabnav { background: #fff; border-bottom: 1px solid var(--border); padding: 0 28px; display: flex; gap: 4px; position: sticky; top: 73px; z-index: 100; overflow-x: auto; }
+.tabnav button { background: none; border: none; padding: 13px 16px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; margin-bottom: -1px; transition: all .15s; }
+.tabnav button:hover { color: var(--blue); }
+.tabnav button.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 700; }
+
+/* ── LAYOUT ── */
+.page { display: none; padding: 24px 28px; max-width: 1100px; margin: 0 auto; }
+.page.active { display: block; }
+
+/* ── PROFILE PANEL ── */
+.profile-bar { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 22px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.profile-bar label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; display: block; margin-bottom: 4px; }
+.profile-bar input[type="text"] { border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: 13px; color: var(--text); width: 180px; }
+.profile-bar input[type="text"]:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,112,186,.12); }
+.profile-bar select { border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: 13px; color: var(--text); background: #fff; cursor: pointer; }
+.profile-bar select:focus { outline: none; border-color: var(--blue); }
+.level-badge { background: var(--navy); color: #fff; padding: 5px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; white-space: nowrap; }
+
+/* ── SECTION HEADERS ── */
+.section-header { margin-bottom: 18px; }
+.section-header h2 { font-size: 20px; font-weight: 700; color: var(--navy); }
+.section-header p { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+/* ── CARDS ── */
+.card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; }
+.card-head { padding: 14px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; }
+.card-head:hover { background: #fafcff; }
+.dim-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.card-head h3 { font-size: 14px; font-weight: 700; color: var(--text); flex: 1; }
+.card-head .chevron { color: var(--muted); font-size: 12px; transition: transform .2s; }
+.card-head.open .chevron { transform: rotate(180deg); }
+.card-body { padding: 18px 20px; display: none; }
+.card-body.open { display: block; }
+
+.criteria-box { background: var(--light); border: 1px solid #c8dff5; border-radius: 8px; padding: 12px 16px; margin-bottom: 14px; font-size: 13px; line-height: 1.7; color: var(--text); }
+.criteria-box p { margin-bottom: 6px; }
+.criteria-box p:last-child { margin-bottom: 0; }
+.criteria-bold { font-weight: 700; color: var(--navy); }
+
+.evidence-label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 6px; }
+.evidence-area { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--text); font-family: inherit; resize: vertical; min-height: 80px; background: #fff; transition: border-color .15s; }
+.evidence-area:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,112,186,.1); }
+.evidence-area::placeholder { color: #9EB0C8; }
+
+/* ── NEXT LEVEL CHIP ── */
+.next-chip { display: inline-block; background: linear-gradient(90deg, var(--navy), var(--blue)); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-bottom: 14px; }
+
+/* ── TRANSITION BEHAVIORS ── */
+.behavior-item { display: flex; gap: 10px; margin-bottom: 12px; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: #fff; }
+.behavior-check { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 5px; flex-shrink: 0; cursor: pointer; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+.behavior-check.checked { background: var(--green); border-color: var(--green); }
+.behavior-check.checked::after { content: '✓'; color: #fff; font-size: 11px; font-weight: 900; }
+.behavior-text { flex: 1; }
+.behavior-text p { font-size: 13px; color: var(--text); line-height: 1.6; }
+.behavior-evidence { margin-top: 8px; }
+
+/* ── GOALS PAGE ── */
+.goal-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 14px; }
+.goal-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: var(--navy); color: #fff; border-radius: 50%; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.goal-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.goal-inputs { flex: 1; }
+.goal-title { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 7px 12px; font-size: 13px; font-weight: 600; font-family: inherit; color: var(--text); margin-bottom: 6px; }
+.goal-title:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,112,186,.1); }
+.goal-desc { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-size: 13px; font-family: inherit; color: var(--text); min-height: 60px; resize: vertical; }
+.goal-desc:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,112,186,.1); }
+/* eval styles removed — evaluation now in Career Plan Summary */
+
+/* ── ROLE DESCRIPTION ── */
+.role-desc-box { background: var(--light); border: 1px solid #c8dff5; border-radius: 8px; padding: 14px 16px; margin-bottom: 20px; }
+.role-desc-box .rdlabel { font-size: 11px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+.role-desc-box .rdtext { font-size: 13px; color: var(--text); line-height: 1.7; white-space: pre-wrap; }
+.setup-field textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 14px; font-family: inherit; color: var(--text); min-height: 100px; resize: vertical; }
+.setup-field textarea:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,112,186,.12); }
+
+/* ── PROGRESS TRACKER ── */
+.progress-bar-wrap { background: var(--border); border-radius: 4px; height: 6px; margin-top: 4px; }
+.progress-bar { height: 6px; border-radius: 4px; background: linear-gradient(90deg, var(--navy), var(--sky)); transition: width .4s; }
+
+/* ── STATUS CHIPS ── */
+.status-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.status-chip { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+.status-chip.green { background: #D1FAE5; color: #065F46; }
+.status-chip.amber { background: #FEF3C7; color: #92400E; }
+.status-chip.blue { background: #DBEAFE; color: #1E40AF; }
+
+/* ── SETUP PAGE ── */
+.setup-page { max-width: 580px; margin: 40px auto; }
+.setup-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 32px; }
+.setup-card h2 { font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 6px; }
+.setup-card .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+.setup-field { margin-bottom: 18px; }
+.setup-field label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; display: block; margin-bottom: 7px; }
+.setup-field input, .setup-field select { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 14px; font-family: inherit; color: var(--text); }
+.setup-field input:focus, .setup-field select:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,112,186,.12); }
+.level-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.level-btn { padding: 12px 8px; border: 2px solid var(--border); border-radius: 8px; background: #fff; cursor: pointer; text-align: center; transition: all .15s; }
+.level-btn:hover { border-color: var(--blue); background: var(--light); }
+.level-btn.selected { border-color: var(--navy); background: var(--navy); color: #fff; }
+.level-btn .lnum { font-size: 16px; font-weight: 800; display: block; }
+.level-btn .ltitle { font-size: 10px; display: block; margin-top: 2px; opacity: .8; }
+.btn-primary { background: linear-gradient(135deg, var(--navy), var(--blue)); color: #fff; padding: 11px 24px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; font-weight: 700; width: 100%; margin-top: 8px; transition: opacity .15s; }
+.btn-primary:hover { opacity: .9; }
+.track-toggle { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 14px; }
+.track-btn { flex: 1; padding: 9px; background: #fff; border: none; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted); transition: all .15s; }
+.track-btn.active { background: var(--navy); color: #fff; }
+
+/* ── PRINT ── */
+@media print {
+  .header, .tabnav, .btn, .profile-bar select, .header-right { display: none !important; }
+  .page { display: block !important; padding: 0; }
+  .card-body { display: block !important; }
+  body { background: white; }
+}
+
+/* ── MISC ── */
+.info-box { background: var(--light); border: 1px solid #c8dff5; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; font-size: 13px; color: var(--navy); line-height: 1.6; }
+.info-box strong { font-weight: 700; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } .level-grid { grid-template-columns: repeat(2,1fr); } }
+.autosave-note { font-size: 11px; color: var(--muted); text-align: right; margin-top: 6px; }
+hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+
+/* ── BREADCRUMB ── */
+.breadcrumb { background: #fff; border-bottom: 1px solid var(--border); padding: 0 28px; display: flex; align-items: center; gap: 2px; display: none; overflow-x: auto; }
+.bc-step { display: flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 12px; color: var(--muted); font-weight: 500; white-space: nowrap; cursor: pointer; transition: all .15s; }
+.bc-step:hover { color: var(--blue); }
+.bc-step.bc-active { color: var(--blue); font-weight: 700; background: var(--light); }
+.bc-step.bc-done { color: var(--navy); font-weight: 600; }
+.bc-step .bc-num { width: 18px; height: 18px; border-radius: 50%; background: var(--border); color: var(--muted); font-size: 10px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .15s; }
+.bc-step.bc-active .bc-num { background: var(--blue); color: #fff; }
+.bc-step.bc-done .bc-num { background: var(--navy); color: #fff; }
+.bc-sep { color: var(--border); font-size: 13px; padding: 0 2px; flex-shrink: 0; }
+
+/* ── TIME IN ROLE ── */
+.time-in-role-display { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(90deg, var(--navy), var(--blue)); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-top: 8px; }
+.time-in-role-display.hidden { display: none; }
+
+/* ── SATISFACTION SLIDER ── */
+.satisfaction-wrap { display: flex; align-items: center; gap: 16px; margin-top: 6px; }
+.satisfaction-wrap input[type=range] { flex: 1; accent-color: var(--navy); cursor: pointer; height: 20px; }
+.satisfaction-score { display: flex; flex-direction: column; align-items: center; min-width: 64px; }
+.satisfaction-score .s-num { font-size: 26px; font-weight: 900; color: var(--navy); line-height: 1; }
+.satisfaction-score .s-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .3px; margin-top: 3px; white-space: nowrap; }
+
+/* ── IDEAL ROLE ── */
+.fit-percent-section { margin-top: 20px; }
+.fit-percent-section > label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; display: block; margin-bottom: 8px; }
+.fit-range-wrap { display: flex; align-items: center; gap: 14px; }
+.fit-range-wrap input[type=range] { flex: 1; accent-color: var(--blue); cursor: pointer; height: 20px; }
+.fit-pct-display { font-size: 24px; font-weight: 900; color: var(--navy); min-width: 56px; text-align: right; }
+.fit-pct-bar-track { width: 100%; height: 8px; background: var(--border); border-radius: 4px; margin-top: 8px; overflow: hidden; }
+.fit-pct-bar-fill { height: 8px; background: linear-gradient(90deg, var(--navy), var(--sky)); border-radius: 4px; transition: width .3s; }
+.fit-pct-note { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 6px; }
+
+/* ── CONTINUE / SUMMARIZE BUTTONS ── */
+.btn-continue { background: linear-gradient(135deg, var(--navy), var(--blue)); color: #fff; padding: 11px 26px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; font-weight: 700; transition: opacity .15s; }
+.btn-continue:hover { opacity: .9; }
+.btn-summarize { background: linear-gradient(135deg, #16a34a, #059669); color: #fff; padding: 11px 26px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; font-weight: 700; transition: opacity .15s; margin-top: 16px; }
+.btn-summarize:hover { opacity: .9; }
+.page-footer-actions { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; }
+
+/* ── SUMMARY PAGE ── */
+.summary-block { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 16px; }
+.summary-block h3 { font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.summary-row { display: flex; gap: 14px; margin-bottom: 10px; align-items: flex-start; }
+.summary-key { font-size: 12px; font-weight: 700; color: var(--muted); min-width: 130px; flex-shrink: 0; padding-top: 1px; }
+.summary-val { font-size: 13px; color: var(--text); line-height: 1.6; flex: 1; }
+.sat-pip-row { display: flex; gap: 3px; margin-top: 5px; }
+.sat-pip { width: 16px; height: 16px; border-radius: 3px; background: var(--border); }
+.sat-pip.filled { background: var(--navy); }
+.readiness-stat { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+.readiness-pct-big { font-size: 38px; font-weight: 900; line-height: 1; }
+.readiness-sub { font-size: 13px; color: var(--text); }
+.readiness-sub small { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
+.goal-sum-card { border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; }
+.goal-sum-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.goal-sum-desc { font-size: 12px; color: var(--muted); margin-bottom: 8px; line-height: 1.6; }
+.narrative-card { background: var(--light); border: 1px solid #c8dff5; border-left: 4px solid var(--navy); border-radius: 0 8px 8px 0; padding: 18px 22px; font-size: 14px; line-height: 1.85; color: var(--text); }
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAMGklEQVR42t2cbYxc51XHf+d57r2zs7Ne78aN17WxU+86Dn7ddZyYUtzalfhQKQ1BqnY/lIp+QVVBxKDyJQhV46kQDpTIuJZAIEBIoEh4RStERYWQGruCSAg1aerYjdpEUZO2BLdy1i+7O3PvfZ7Dh+fum9929854d8wj7evcOzPP/57zP+f8z7kjLL8EFHZ9JaFv5itI9GnU9YIa1mZ5lCbCNZD/AX0T7KtY/S/QV/j2c9fmjzxWj7hw0oFop15clj3iWD3iQiNn9NTniDf8JfkNXdF5HV0CIiAGsOHVfQaq7yLmWwj/hEz/G99uzAAwfs4yOeE68cpmFe/xl9HcozjWfCmoV3zucS1H3nSoBzHbMcmvIfFX8bWLjD3/+xw4NRjAqRtQuf8WNOdiY6dewyQH8JlfFbD3FzhF8eFSxxaTgE/fQd2X+M5zfxOOGbcw6e4TQCogypN/soUsfxOxNdSvg4utmKs8xkaYBFzrX0hnPsflxnvtuNy9LWF8MjyeZY9hkhrqfZeCE/YiRGiu5LM5tvI0ldrLjP7hGJMTjvFztvMAXblUgCGjSMy8OXf1EkGIyGdyxO7EVL7JgS8dDiCN284CtLAOgfJALZEI13KIDBJVvs6+P93O5KQP5N0pgC40XEFFB1AH0i3kvGKQLC7NMckW4vRFqAvjl6VDAKkAypN/tAl0F5rTibC5LpaUz+ZEfUcZ7flNJidXxUd3B2h8IjyWsxsTb0SdhmztAVwiBtfyCF/k8PMbmZzwK73Ydwfoyt7wBF4PYmJQcTy4y+AzxfYOkbsJQDl20rbPQQH9Qx3NiNf069blFMxE4NeVRWRZNkkcPfUyNvlFXOoQbBtmXlyP+x0NZdHFCMl2AZgiVtD8fTQd5rXG1Pwe77Gie4Jz5Ew/rZu7QwRTUzpHFIE88zSvgbr7C44YMBZMBDYBawUTAVbAg0SDmMoIqq8gJ2W5K3YXgIoT85lHMfGmtgh6Dpypd8Dl5v7zvC5WABSxECVKXFWSmqfSHzF1JUFEefZfE87SWj1AxzBcwONlPzaBfNYhdwNzuTdrIZ1WfG4xMWuXcGpASR2kM0JrGuSqkvQpe48+xWf0Ig25CQJ1b2iIXz1Jqz7eXulVWHDekvnf15yg59wuAmMss1eVzcN/QOvqa/zuDz8PKjTEc07tygGaZ3gdBddegqheca0FsNZPGgHvIekVoijHuWEq/X/B7/3kW5x46yAT4qi/FK0EIIGG5+CXa8Bj+LyNEkPAe8Xlsu45pgh4B7UBpbbRks54mlM5NjlKUnuZE299hsbH81tBusPG68VO0p2IGWqboH0W3tj6p9PgMnj4EUiqAt4gEtG67nBpjerg3/M7b38hgKTR3QE6VvzP2v3YiqDqy5OkQN4EvKy/jKRgrLJtDyzekhiLz5XWDUd18AVOvPl5GpLPcZK5B0EfCg+30yFQyFvrr7GJQJ7CQ1uVoZ1C1ioaAPMgCeoNreuOuPbnnPjhUSbEMa7W3J2gGWuPoCVkr3l6S36yXu6Vw+6PQNIj3MkpREJKICIY+TvqP+5l7+29rUDQu85UUN2DL04oTdAu+P16ErQYyJowtNMzPCakzaXWs/RgSzaTUx0c4Vr22zTEmzsSdPXahxDZGjSgkhFMBFymeLe+/KM+cM/jT4GJ7mw9SwO7Ib2hqD/Bs9/vN3ckaBPvxfZYtGzhVLhT3pqr69bPelozMPYJZWjYkN3LeuYN35C3lKS2DZs8fbejO0DQAnmq68Y9xkLzBvz8L3n2fUxozSwPzoL1KxgFeWbpGZv3hd2IjoFvk6C94haXGGtIyGJg9gbsOuI58oyQtWRVRqxq8Kmg/rDcVjgdq0dMVd7AxiP4vHwXVb3y/juKz82auZiYwDnprLLno54nnja4PPDOagOFCHg/a24j6Pej7SA7iuxXSr9Rlys+Xxv+mRtsyJohtfjwp5Qjv2pwWTlw5oQ2oWeh7hjfJ0wCxu7BVGJc0yFSQkEs3Mm1QPX+1mAiCyVEnsKWRz1PfBI+sN0EzpE2UgwBJVsAaKGLOobYDhJ0hzloDhQ0gOJyGBjy7PkYjBwWjCm0n3ZaeKqYSHDZT6PbCFo5RFsd5sUEbW7RiUtIy4vPVQ95FizGRspD25SRJ+BDo0JPn5DOBsCkzf6mothEcPmlBYAWZmr2td1FVR/eKBqyaSnjpT7wgPfM80jcowwMKUMj8HN74OFHhLgiZE3mraYTLi1oANl/swCobqDhGY0/CLITn7dH0FlTad4UevoUG8kqXUwRo9hYSHqUaj/0bYKBLTC4Bfo/ICRVwbvgYvPAdLArLsaSTbew8s/REoIWuweT9ODT9oakfK48+SvK9n2LRHpZDc8INgIbh5/GBpBdUdu1plk6ltfJ0kQdlQ2G5vULnNn5RrSUoBlFItDUl3IxkRBqh8eUA8cimjNlSYxi7A6yFrd0KjoPyp0jwZ/B7V2NDoy5CAxsMaTNwEOmjTC7JGqtRWGrjsoGS3PqPzgz/A3qagJAYcxFUN3fFkGrQhQrvRuKRGsNN9cBdDAWXJaDPAvA5UmJ5ruoB7+8GclGComjXFz2DqoblJ5a+Qx2/VZOz0DMzJXnOLPrO4yrZVKcmZ9D1PQxTNJXeg5RCG3l3g0QV0J45oExnozqppjZq//ImV1/TP2liMkwzRLNE7SZm0PMfGkX8wp9DynGmAcKnN5NMc1r/87GR36duhoaC7PgCxsRfbxtghagb0AeiHFG9YqSF+B8Hd59hoaknEQXl1km3NsAqJmbQ5SyHIeNldpA97uXao5NhJ7+iOa1s5z+62c4/ZFZ6nUTxLJbY+mBU4MYfRtjy4/aqYdKzfMLnxSiWMJcTnfBgmqgj55BIZv5X3z+BU7veBEthEG5vUAvNGj3aFtziEFc6k6CVvWo5oDQs9FiEiWb/lv8jcOc3vEi42oLWeSOVzTkQWrDmEuWlxxzIYBSG1SsNaFQXadcRlGEuZ+WuGqIegytmyl582uIvMALW/87lFghlN/rGaPCjtqfQxSg/6HOSD+h3e1XnG2ICorBWMHGQpSAWMimweeXSKe/hjcvcnrr9+aBOYdHlh9MLSxID4bRuJItGtWgz/T2r6DvtILoElcNUdWsCG0tajaXgktncemP8fkljPwnmPO8u/WVeSsZP2fZO640xK10mxFH6v20eLStMRf1kFSVap/g28ig1StxTXCt75Gn/wD8rLAQvauw5WkSMYWaKyR9P6G66T0astTH6y9FcNzTWP0oc0TWuxvRoWBBJQnaeahugKSnPEGreqKq4NI3yJsf5uzu66WtMFiKAJ4GehtgqwJI/RgmMW1pQPMEHRlcq6wFeeLeiNn3v8rZ3depaw+cX9nGLh9XmIS9l5TGSV2OeFcHEDyBCKgqbcwpsGGg3cpUQqEs3w1ceD6n8fESV77R0bgYoTxeVN4lM2jCcEC7GbSIJb2pCK+HVF+7IpmKQMeCBlKYeRmCjqvQ229KE7TiiWJDnr7HbPJ2YQjaHQCJvEvUN1xqAj4MiUNtAJKKlr7oooqtgMve4K+2zYSKWrrEgpwcQ5q/gfotqNdVFatiDFnTM/jYPuLqUVrTHikhGCsabhfgtUUlUJcAdPG5HwEn23qWp957HpMchemSkVCKhE9eDX+f75pSLoK6mR+cWu36KYbLlx2tmY9SseWJXtSSTYOkr4d/HO+aareN0Fxo2b/1eh9x7S1sshmX6qpBUi3avOnP8NlISBCXv01prVZ5abRegFvpHcFED+MzLWVBIh6bgPB9zu6+HrQZ6RoxqQ3t+Hwh9pv9JDUp/ZkeqoqNQeW7AJxs46a97gLo+FwEOhQ6ne1cdAXDK3Thaqf7MHdH0FihBJTlM0s2C7leDHXVZFdptWV1icAT9bd7mOJNoso28jL9fFVMLLjsGsYOc3rH1WIq7QHnoDmCnmInYj6IS0tqSQVBIz/g9I6r0F3gtOFiBUGL7KPSZ0rfqasEghaCe9XP2/8nHHR87pcwz6hlGVqLb/7VW573gSdpX+zvcMh/KD/j4jJBohDiL3dfT7YcQCfn79rfjIlL6kheqfRZ0umrcP0iqDDZfZ9PVA6giUlDoOUvkrd+FNxMdfHHHNz9qzjOxA51b6HyWU7vvxqIX7rOgv4P8lyFcOAXHe4AAAAASUVORK5CYII=" style="width:36px;height:36px;object-fit:contain;flex-shrink:0" alt="PayPal">
+  <div class="header-text">
+    <h1>XD Career Navigation</h1>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-ghost" onclick="window.print()">⬡ Print / Export</button>
+    <button class="btn btn-white" onclick="clearAll()">Reset</button>
+  </div>
+</div>
+
+<!-- TAB NAV -->
+<div class="tabnav">
+  <button id="tab-setup" class="active" onclick="showTab('setup')">1. My Profile</button>
+  <button id="tab-current" onclick="showTab('current')">2. My Current Level</button>
+  <button id="tab-next" onclick="showTab('next')">3. Getting to Next Level</button>
+  <button id="tab-ideal" onclick="showTab('ideal')">4. My Ideal Role</button>
+  <button id="tab-goals" onclick="showTab('goals')">5. 2026 Goals</button>
+  <button id="tab-summary" onclick="showTab('summary')">6. Career Plan</button>
+</div>
+
+
+<!-- ═══════════════ SETUP PAGE ═══════════════ -->
+<div id="page-setup" class="page active">
+  <div class="setup-page">
+    <div class="setup-card">
+      <h2>Career Navigation</h2>
+      <p class="subtitle">This tool helps you understand where you are, what's expected, what you need to grow, and how your 2026 goals connect to the PayPal XD Career Framework.</p>
+
+      <div class="setup-field">
+        <label>Your Name</label>
+        <input type="text" id="setup-name" placeholder="e.g. Alex Kim" oninput="saveProfile()">
+      </div>
+
+      <div class="setup-field">
+        <label>Current Role &amp; Team</label>
+        <input type="text" id="setup-role" placeholder="e.g. Senior XD Designer, Checkout" oninput="saveProfile()">
+      </div>
+
+      <div class="setup-field">
+        <label>Describe the Role You Currently Occupy</label>
+        <textarea id="setup-roledesc" placeholder="e.g. I am a Senior XD Designer embedded in the Checkout team, where I own the end-to-end design for the payment method selection and confirmation flows. Day-to-day I work directly with a PM and engineering lead to scope and ship features, run weekly design reviews, and mentor one junior designer. I make decisions about UX patterns, edge case handling, and when to escalate design risks to the design manager." oninput="saveProfile()"></textarea>
+      </div>
+
+      <div class="setup-field">
+        <label>Time in Role — When did you start this role?</label>
+        <input type="date" id="setup-rolestart" oninput="saveProfile(); updateTimeInRole()" style="width:auto;max-width:220px;">
+        <div class="time-in-role-display hidden" id="time-in-role-badge">⏱ —</div>
+      </div>
+
+      <div class="setup-field">
+        <label>How satisfied are you in your current role?</label>
+        <div class="satisfaction-wrap">
+          <input type="range" id="setup-satisfaction" min="1" max="10" value="5" oninput="updateSatisfaction(); saveProfile()">
+          <div class="satisfaction-score">
+            <span class="s-num" id="satisfaction-num">5</span>
+            <span class="s-label" id="satisfaction-label">Neutral</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="setup-field">
+        <label>Track</label>
+        <div class="track-toggle">
+          <button id="track-ic" class="track-btn active" onclick="setTrack('ic')">Individual Contributor (IC)</button>
+          <button id="track-mgr" class="track-btn" onclick="setTrack('mgr')">Manager</button>
+        </div>
+      </div>
+
+      <div class="setup-field">
+        <label>Select Your Current Level</label>
+        <div id="level-grid-ic" class="level-grid">
+          <button class="level-btn" data-lvl="5" onclick="selectLevel('5')"><span class="lnum">L5</span><span class="ltitle">XD Designer</span></button>
+          <button class="level-btn" data-lvl="6" onclick="selectLevel('6')"><span class="lnum">L6</span><span class="ltitle">Senior XD Designer</span></button>
+          <button class="level-btn" data-lvl="7" onclick="selectLevel('7')"><span class="lnum">L7</span><span class="ltitle">Staff XD Designer</span></button>
+          <button class="level-btn" data-lvl="8" onclick="selectLevel('8')"><span class="lnum">L8</span><span class="ltitle">Senior Staff</span></button>
+          <button class="level-btn" data-lvl="9" onclick="selectLevel('9')"><span class="lnum">L9</span><span class="ltitle">Principal</span></button>
+          <button class="level-btn" data-lvl="10" onclick="selectLevel('10')"><span class="lnum">L10</span><span class="ltitle">Distinguished</span></button>
+        </div>
+        <div id="level-grid-mgr" class="level-grid" style="display:none">
+          <button class="level-btn" data-lvl="m7" onclick="selectLevel('m7')"><span class="lnum">L7</span><span class="ltitle">Design Manager</span></button>
+          <button class="level-btn" data-lvl="m8" onclick="selectLevel('m8')"><span class="lnum">L8</span><span class="ltitle">Senior Mgr</span></button>
+          <button class="level-btn" data-lvl="m9" onclick="selectLevel('m9')"><span class="lnum">L9</span><span class="ltitle">Director</span></button>
+          <button class="level-btn" data-lvl="m10" onclick="selectLevel('m10')"><span class="lnum">L10</span><span class="ltitle">Sr. Director</span></button>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="goToAssessment()">Continue →</button>
+      <p class="autosave-note">Your responses auto-save in this browser.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ CURRENT LEVEL PAGE ═══════════════ -->
+<div id="page-current" class="page">
+  <div class="profile-bar">
+    <div>
+      <label>Designer</label>
+      <strong id="disp-name" style="font-size:14px">—</strong>
+    </div>
+    <div>
+      <label>Role</label>
+      <span id="disp-role" style="font-size:13px;color:var(--muted)">—</span>
+    </div>
+    <div id="disp-tir-wrap" style="display:none">
+      <label>Time in Role</label>
+      <span id="disp-tir" style="font-size:13px;color:var(--muted)">—</span>
+    </div>
+    <div style="margin-left:auto">
+      <span id="disp-badge" class="level-badge">L?</span>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <h2 id="cur-level-title">My Current Level</h2>
+    <p id="cur-level-sub">These are the expectations at your level. For each dimension, add evidence of how you're demonstrating this in your work.</p>
+  </div>
+
+  <div id="cur-roledesc-wrap" style="display:none" class="role-desc-box">
+    <div class="rdlabel">Your Role Description</div>
+    <div id="cur-roledesc-text" class="rdtext"></div>
+  </div>
+
+  <div class="info-box">
+    <strong>How to use this section:</strong> Read each competency dimension. Add specific examples, projects, or outcomes as your evidence. Be concrete — "I did X which resulted in Y" beats "I think I'm good at Z." This is your prep for your next career conversation.
+  </div>
+
+  <div id="current-cards"></div>
+
+  <div class="page-footer-actions" style="margin-top:24px">
+    <button class="btn-continue" onclick="showTab('next')">Continue to Getting to Next Level →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ NEXT LEVEL PAGE ═══════════════ -->
+<div id="page-next" class="page">
+  <div class="profile-bar">
+    <div><label>Designer</label><strong id="next-disp-name" style="font-size:14px">—</strong></div>
+    <div><label>Role</label><span id="next-disp-role" style="font-size:13px;color:var(--muted)">—</span></div>
+    <div id="next-disp-tir-wrap" style="display:none"><label>Time in Role</label><span id="next-disp-tir" style="font-size:13px;color:var(--muted)">—</span></div>
+    <div><label>Current</label><span id="next-disp-cur" class="level-badge" style="background:var(--muted)">L?</span></div>
+    <div><label>Target</label><span id="next-disp-tgt" class="level-badge">L?</span></div>
+  </div>
+
+  <div class="section-header">
+    <h2 id="next-level-title">Getting to the Next Level</h2>
+    <p>[Optional] Gather evidence and evaluate readiness on moving to the next level.</p>
+  </div>
+
+  <div id="next-progress-wrap" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:20px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <span style="font-size:13px;font-weight:700;color:var(--navy)">Readiness Check</span>
+      <span id="progress-count" style="font-size:13px;font-weight:700;color:var(--blue)">0 / 0 checked</span>
+    </div>
+    <div class="progress-bar-wrap"><div id="progress-bar" class="progress-bar" style="width:0%"></div></div>
+    <p style="font-size:11px;color:var(--muted);margin-top:5px;">Check behaviors you can demonstrate with a real example. Consistent, not occasional, is the bar.</p>
+  </div>
+
+  <div id="transition-cards"></div>
+
+  <div id="no-transition" style="display:none;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:32px;text-align:center;">
+    <p style="font-size:16px;font-weight:700;color:var(--navy)">You're at L10 — Distinguished XD Designer</p>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px;">The framework doesn't define a transition beyond L10. At this level, you're shaping what the next level of design leadership at PayPal looks like.</p>
+  </div>
+
+  <div class="page-footer-actions">
+    <button class="btn-continue" onclick="showTab('ideal')">Continue to My Ideal Role →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ GOALS PAGE ═══════════════ -->
+<div id="page-goals" class="page">
+  <div class="profile-bar">
+    <div><label>Designer</label><strong id="goals-disp-name" style="font-size:14px">—</strong></div>
+    <div><label>Role</label><span id="goals-disp-role" style="font-size:13px;color:var(--muted)">—</span></div>
+    <div id="goals-disp-tir-wrap" style="display:none"><label>Time in Role</label><span id="goals-disp-tir" style="font-size:13px;color:var(--muted)">—</span></div>
+    <div style="margin-left:auto"><span id="goals-disp-badge" class="level-badge">L?</span></div>
+  </div>
+
+  <div id="goals-roledesc-wrap" style="display:none" class="role-desc-box">
+    <div class="rdlabel">Your Role Description</div>
+    <div id="goals-roledesc-text" class="rdtext"></div>
+  </div>
+
+  <div class="section-header">
+    <h2>2026 Goals</h2>
+    <p>Enter your goals for 2026. When you're ready, generate your personalized Career Plan Summary.</p>
+  </div>
+
+  <div id="goals-list"></div>
+  <button onclick="addGoal()" style="background:#fff;border:1px solid var(--border);color:var(--blue);font-weight:700;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;margin-bottom:24px;">+ Add Goal</button>
+
+  <div style="margin-top:8px;padding-top:20px;border-top:1px solid var(--border);">
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Ready? Generate a summary of your career navigation plan based on everything you've filled in.</p>
+    <button class="btn-summarize" onclick="summarizePlan()">✦ Summarize My Career Plan →</button>
+  </div>
+</div>
+
+
+<!-- ═══════════════ MY IDEAL ROLE PAGE ═══════════════ -->
+<div id="page-ideal" class="page">
+  <div class="profile-bar">
+    <div><label>Designer</label><strong id="ideal-disp-name" style="font-size:14px">—</strong></div>
+    <div><label>Role</label><span id="ideal-disp-role" style="font-size:13px;color:var(--muted)">—</span></div>
+    <div id="ideal-disp-tir-wrap" style="display:none"><label>Time in Role</label><span id="ideal-disp-tir" style="font-size:13px;color:var(--muted)">—</span></div>
+    <div style="margin-left:auto"><span id="ideal-disp-badge" class="level-badge">L?</span></div>
+  </div>
+
+  <div class="section-header">
+    <h2>My Ideal Role</h2>
+    <p>Think beyond your current day-to-day and envision the role you want.</p>
+  </div>
+
+  <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:16px;">
+    <div class="setup-field">
+      <label>Describe your ideal role</label>
+      <textarea id="ideal-role-desc" class="evidence-area" style="min-height:140px;" placeholder="e.g. My ideal role is one where I own the design strategy for a full product pillar — not just features, but the end-to-end customer experience and the vision behind it. I'd work closely with a senior PM and engineering director to shape what we build, serve as the design voice in roadmap conversations, mentor 2–3 designers, and be recognized for the quality of my decisions as much as the quality of my pixels." oninput="saveIdealRole()"></textarea>
+    </div>
+
+    <div class="fit-percent-section">
+      <label>How much of your current role fits this ideal?</label>
+      <div class="fit-range-wrap">
+        <input type="range" id="ideal-fit-pct" min="0" max="100" value="50" oninput="updateFitPct(); saveIdealRole()">
+        <span class="fit-pct-display" id="fit-pct-num">50%</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="page-footer-actions">
+    <button class="btn-continue" onclick="showTab('goals')">Continue to 2026 Goals →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ CAREER PLAN SUMMARY PAGE ═══════════════ -->
+<div id="page-summary" class="page">
+  <div class="profile-bar">
+    <div><label>Designer</label><strong id="sum-disp-name" style="font-size:14px">—</strong></div>
+    <div><label>Role</label><span id="sum-disp-role" style="font-size:13px;color:var(--muted)">—</span></div>
+    <div id="sum-disp-tir-wrap" style="display:none"><label>Time in Role</label><span id="sum-disp-tir" style="font-size:13px;color:var(--muted)">—</span></div>
+    <div><label>Level</label><span id="sum-disp-badge" class="level-badge">L?</span></div>
+    <div style="margin-left:auto">
+      <button class="btn btn-ghost" onclick="window.print()" style="background:var(--navy);color:#fff;border-color:var(--navy);">⬡ Export Plan</button>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <h2>Career Navigation Plan</h2>
+    <p>A summary of your current state, growth trajectory, and goals — ready to discuss with your manager.</p>
+  </div>
+
+  <div id="summary-content">
+    <div style="text-align:center;padding:48px 24px;color:var(--muted);">
+      <p style="font-size:15px;font-weight:700;margin-bottom:6px;">Your plan hasn't been generated yet.</p>
+      <p style="font-size:13px;">Go to <strong>5. 2026 Goals</strong> and click <strong>Summarize My Career Plan</strong>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ JAVASCRIPT ═══════════════ -->
+<script>
+// ── DATA ──────────────────────────────────────────
+var TRACK = 'ic';
+var LEVEL = '6';
+
+var IC_LEVELS = {
+  '5': {
+    title: 'L5 — XD Designer', years: '2+ years',
+    dims: {
+      'Ambiguity': 'Requirements, customer needs, and technical approach are defined. Delivers assigned work with guidance. Asks for direction when stuck. Raises questions when strategy is unclear. Occasionally needs coaching to navigate uncertainty.',
+      'Scope & Influence': 'Scope is a feature or small product area. Handles straightforward design problems. Solves obvious usability problems using existing patterns. Asks for help when patterns don\'t exist. Understands how features fit into larger flows. May help onboard interns.',
+      'Collaboration + Process': 'Collaborates regularly with cross-functional partners as equals. Delivers assigned work. Communicates clearly with their product area\'s cross-functional team, ensuring all key partners are identified and aligned early (Eng, CS, marketing, content, design, brand, insights). Shares work in progress. Participates in design critiques. Documents work and design decisions clearly. Keeps files and specs organized. Can effectively identify roadblocks and determine how to escalate.',
+      'Communication': 'Explains design decisions clearly to immediate team and cross-functional partners. Participates in critiques and asks clarifying questions. Delivers clear design specs and artifacts. Presents simple improvements at the team level. Trusted to present to leaders up to 2 levels above.',
+      'Craft & Design Judgment': '<span class="criteria-bold">Customer Focus:</span> Information in flows focuses on user benefits and jobs to be done, while keeping business KPIs in mind. Learning to identify and aggregate qual and quant data to inform design at the feature level.<br><span class="criteria-bold">Design Craft:</span> Creates designs that match PayPal Design System standards. Knows and implements common design, UI, and content patterns. Learns which approaches work for different design challenges.<br><span class="criteria-bold">Technical Craft:</span> Uses AI tools to generate working prototypes. Produces clear, concise content drafts using AI-assisted writing tools. Learns how design system components map to frontend code. Makes simple UI updates and QA fixes using AI-assisted tools. Documents decisions in formats both humans and AI can use. Partners effectively with engineering.',
+      'Impact': 'Impacts feature-level decisions and feature metrics. Aware of team-level goals. Examples: user engagement, task completion, feature adoption.'
+    }
+  },
+  '6': {
+    title: 'L6 — Senior XD Designer', years: '5+ years',
+    dims: {
+      'Ambiguity': 'Requirements, customer needs, and technical feasibility may not be fully defined. Delivers independently and seeks direction at times. Owns design strategy for a product area. Makes design decisions within established systems, but can determine the right path when no clear answer exists. Connects multiple products under a unified approach. Partners with PM and Eng as equals.',
+      'Scope & Influence': 'Scope is a product or product area. Handles difficult design problems with visible risks and roadblocks. Reviews others\' work and spots deeper issues. Extends patterns for new use cases. Frames problems clearly. Documents decisions so others can reuse them. Begins to mentor junior designers through the work.',
+      'Collaboration + Process': 'Aligns cross-functional partners on design strategy before work starts. Teaches others what good design looks like. Models how to give and receive feedback. Builds positive critique culture. Documents design decisions and rationale — not just what was built but why. Contributes to shared team resources. Handles some roadblocks, knows when to escalate. Accelerates progress by driving crisp decisions. Leads design critiques and raises quality bar within their area. Drives adoption of new patterns. Creates mechanisms that improve cross-team efficiency. Creates reusable documentation and systems. Identifies when institutional knowledge needs to become a shared resource.',
+      'Communication': 'Articulates design rationale clearly to cross-functional partners and leadership. Tailors communication to audience. Influences peers through clear storytelling. Presents a variety of solutions with clear trade-offs. Trusted to present to leaders up to 3 levels above.',
+      'Craft & Design Judgment': '<span class="criteria-bold">Customer Focus:</span> Synthesizes qual and quant data to inform design decisions at the feature and product level.<br><span class="criteria-bold">Design Craft:</span> Handles complex design tasks including multi-state interactions and edge cases. Consolidates similar patterns into reusable components. Demonstrates solid design judgment.<br><span class="criteria-bold">Technical Craft:</span> Builds interactive prototypes using design system components and AI tools to test and validate design decisions before engineering handoff. Makes simple UI updates and QA fixes using AI-assisted tools. Evaluates the technical feasibility of design proposals by understanding platform constraints. Documents design decisions in formats that both humans and AI can reference.',
+      'Impact': 'Impacts product-level customer experience and design trade-offs. Impacts team goals and pushes to shape product strategy and roadmap. Examples: conversion rates, user satisfaction, reduced friction, improved task completion.'
+    }
+  },
+  '7': {
+    title: 'L7 — Staff XD Designer', years: '8+ years',
+    dims: {
+      'Ambiguity': 'Strategy may not be defined. Delivers with limited guidance. Owns design strategy across a pod or team\'s portfolio.',
+      'Scope & Influence': 'Scope is a product portfolio or multiple teams. Handles complex design problems — makes trade-offs that require expertise and high judgment. Identifies patterns across products and builds solutions at scale. Creates new design systems when existing ones don\'t scale. Actively mentors and develops other designers. Ensures their product portfolio feels coherent as a unified experience.',
+      'Collaboration + Process': 'Leads design critiques and raises quality bar within their area. Drives adoption of new patterns. Creates mechanisms that improve cross-team efficiency. Creates reusable documentation and systems that improve how the team works. Identifies when institutional knowledge needs to become a shared resource. Anticipates blockers across their workstream and engages cross-functional partners early. Makes trade-offs between short- and long-term customer needs.',
+      'Communication': 'Communicates design strategy across multiple teams and disciplines, often to senior leadership. Facilitates alignment conversations. Creates clear documentation that enables others to reuse decisions. Influences without authority through compelling narratives. Trusted to present to senior leadership.',
+      'Craft & Design Judgment': '<span class="criteria-bold">Customer Focus:</span> Synthesizes conflicting qual and quant data to inform CX and business decisions.<br><span class="criteria-bold">Design Craft:</span> Creates new design systems when existing ones don\'t scale. Sets the quality bar across product areas.<br><span class="criteria-bold">Technical Craft:</span> Ships frontend changes independently via CMS, string management, or AI-assisted tooling without engineering support. Builds and maintains prompt libraries and reusable templates that improve the team\'s prototyping speed. Evaluates and adopts new AI tools for the team\'s design-to-production workflow.',
+      'Impact': 'Impacts customer experience across multiple products or a complex product suite. Impacts product roadmaps and org goals. Examples: cross-product consistency, task success rates, engagement metrics. Creates AI workflows that improve team efficiency.'
+    }
+  },
+  '8': {
+    title: 'L8 — Senior Staff XD Designer', years: '10+ years',
+    dims: {
+      'Ambiguity': 'Strategy is not defined and may span multiple organizations. Delivers with complete autonomy. Owns design direction across business units. Decides strategic priorities that shape product roadmaps. Creates direction for ambiguous problems — defines what the strategy should be, not just executes it.',
+      'Scope & Influence': 'Scope spans multiple organizations. Handles significantly complex problems; trade-offs have long-term impact. Anticipates design needs based on business direction. Builds design systems that work across multiple orgs. Ensures PayPal feels coherent as a unified experience across multiple organizations. Coaches staff-level designers.',
+      'Collaboration + Process': 'Partners effectively across EPD at scale. Influences business decisions at the leadership level. Defines what great cross-functional collaboration looks like at PayPal. Builds frameworks that multiple orgs depend on. Builds shared references and knowledge artifacts that multiple teams rely on. Manages complex escalations independently and may create the conditions for teams to stay unblocked. Proactively identifies technical investments that unlock innovation.',
+      'Communication': 'Presents design strategy persuasively to senior leadership. Translates design decisions into business terms. Creates frameworks and artifacts that communicate complex systems clearly. Aligns diverse stakeholders around a shared vision. Leads cross-org reviews.',
+      'Craft & Design Judgment': '<span class="criteria-bold">Customer Focus:</span> Drives synthesis that results in customer insights and business opportunities across the org.<br><span class="criteria-bold">Design Craft:</span> Defines craft principles for the organization. Sets standards for and system architecture. Exceptional design judgment recognized across PayPal. Sets standards for the discipline.<br><span class="criteria-bold">Technical Craft:</span> Owns end-to-end implementation for complex, cross-team feature areas using AI-assisted tools — from prototype through shipped product. Defines the technical patterns and workflows that bridge design and engineering. Builds the playbooks that determine which design tasks can be reliably automated vs. which require human craft judgment.',
+      'Impact': 'Impacts customer experience of a suite of products or significantly complex products. Shapes business strategy through the design lens. Examples: transaction volume, merchant acquisition, platform adoption, NPS improvements. Establishes AI XD standards and leads organizational AI adoption.'
+    }
+  },
+  '9': {
+    title: 'L9 — Principal XD Designer', years: '15+ years',
+    dims: {
+      'Ambiguity': 'Strategy is undefined and spans the company. Delivers with complete autonomy and discernment. Sets company-wide design standards. Defines principles that guide all product design at PayPal.',
+      'Scope & Influence': 'Scope is company-wide. Handles the most challenging design problems — endemic challenges, global risks, trade-offs between innovation, cost, and brand trust. Ensures PayPal feels coherent as a unified experience company-wide. Raises the bar for design excellence company-wide.',
+      'Collaboration + Process': 'Represents design at company leadership level. Builds design community across business units. Sets the bar for how design knowledge gets captured and shared across the organization. Manages the most challenging and high-visibility escalations, and helps shape how the organization identifies and resolves roadblocks.',
+      'Communication': 'Communicates at the executive level with authority and clarity. Shapes the narrative around design\'s role and value at PayPal. Influences how others think and talk about design through thought leadership. Delivers highly effective presentations autonomously to the most senior leaders.',
+      'Craft & Design Judgment': '<span class="criteria-bold">Customer Focus:</span> Drives synthesis across the company that results in customer insights and business opportunities. Drives potentially category-defining choices.<br><span class="criteria-bold">Design Craft:</span> Sets company quality bar. Defines what excellence means — others look to this level as the standard. Industry-recognized craft excellence.<br><span class="criteria-bold">Technical Craft:</span> Establishes and maintains the prototyping toolchain and workflow standards that enable designers across the org to ship frontend changes at scale. Determines the automation boundary — what gets built by AI, what gets built by designers, what gets built by engineers — and makes that decision stick through tooling and governance.',
+      'Impact': 'Drives long-term strategy and sets design vision at the company level. Decisions have long-term bottom-line impact. Examples: new market entry, category leadership, AI-native product innovation, ecosystem growth. Shapes industry thinking on AI in fintech XD.'
+    }
+  },
+  '10': {
+    title: 'L10 — Distinguished XD Designer', years: '15+ years',
+    dims: {
+      'Ambiguity': 'Strategy is undefined and spans the company and beyond. Anticipates paradigm shifts and designs for them ahead of others.',
+      'Scope & Influence': 'Scope is company-wide with reach beyond. Creates frameworks and approaches that other teams and organizations adopt. Decisions affect how hundreds of millions of people experience financial services. Plays a key role in corporate strategy through design. Work positions PayPal as a design leader in fintech. Recognized as a leader in the industry through external thought leadership and conferences.',
+      'Collaboration + Process': 'Shapes how design collaborates across the entire company. Creates shared references and frameworks that extend beyond PayPal. Design knowledge produced at this level becomes an industry resource. Establishes executive-level partnerships. Drives patterns, frameworks, and documentation adopted across multiple organizations.',
+      'Communication': 'Sets the standard for design communication at PayPal and in the industry. Communicates complex design vision in ways that inspire action at every level. Represents PayPal design externally through speaking, publishing, and industry engagement.',
+      'Craft & Design Judgment': '<span class="criteria-bold">Customer Focus:</span> Proactively analyzes trends to anticipate future customer needs and create forward-looking design strategy.<br><span class="criteria-bold">Design Craft:</span> Defines what "good" means for digital financial services before others have articulated it. Fundamentally advances how the discipline is practiced. Balances high-level design philosophy with master craftsperson-level detail.<br><span class="criteria-bold">Technical Craft:</span> Defines the org\'s design-to-production pipeline — from concept through AI-assisted prototyping to designer-owned implementation — with measurable improvements in speed-to-ship and design quality. Creates tooling and methodology that change how designers across PayPal work.',
+      'Impact': 'Decisions have bottom-line impact on the company and its competitive position. Work shapes how hundreds of millions of people understand and interact with money. Examples: defining new product categories, transforming how millions interact with financial services, setting the direction for AI ethics in product design.'
+    }
+  }
+};
+
+var MGR_LEVELS = {
+  'm7': {
+    title: 'L7 — Design Manager', years: '8+ years (incl. 1–2 yrs managing)',
+    dims: {
+      'Ambiguity': 'Strategy for the team\'s product area is mostly defined. Delivers team goals independently with limited guidance. Clarifies ambiguity for the team — translates unclear organizational direction into actionable design objectives. Shields the team from noise while surfacing the right problems.',
+      'Scope & Influence': 'Scope is a team/pod or product area. Direct supervisor of a team of ICs. Does not manage other managers. Responsible for the quality and output of the team\'s design work. Holds the quality bar for the product area. Begins to influence cross-functional partners beyond design. Influences product decisions and feature outcomes.',
+      'Collaboration + Process': 'Partners with PM and Engineering counterparts as a peer leader. Represents design in team-level planning and roadmap conversations. Drives design critique culture within the team. Creates processes that improve design quality and delivery speed. Ensures the team documents their work and rationale consistently. Creates lightweight norms and templates that make knowledge sharing a team habit. Escalates blockers that put team goals at risk.',
+      'Communication': 'Communicates clearly on behalf of the team to cross-functional partners and leadership. Translates design decisions into product and business terms. Advocates for the team\'s work in reviews. Trusted to present to leaders up to 3 levels above.',
+      'Design Management & Judgment': '<span class="criteria-bold">Team + People Leadership:</span> Hires, onboards, and develops a team of ICs. Sets clear expectations and gives direct feedback. Holds the quality bar without doing the work for them. Identifies growth opportunities and builds toward promotions where merited.<br><span class="criteria-bold">Design Craft:</span> Evaluates the team\'s work, gives meaningful critique, and protects craft standards. Has a deep enough understanding of craft standards and guidelines to coach team members on the "why" as well as the "what".<br><span class="criteria-bold">Technical Craft:</span> Ensures the team adopts and effectively uses AI-assisted design and prototyping tools. Trains team members on CMS, string management, and AI-assisted workflows. Removes blockers so designers can ship frontend changes without engineering dependencies.',
+      'Impact': 'Moderate impact at the team level. Examples: team velocity, design quality, designer retention, feature-level NPS.'
+    }
+  },
+  'm8': {
+    title: 'L8 — Senior Design Manager', years: '10+ years (incl. 3+ yrs managing)',
+    dims: {
+      'Ambiguity': 'Strategy may not be fully defined and spans multiple teams or product areas. Delivers org goals with limited guidance. Defines design goals and a long-term strategy for a portion of the portfolio. Leads with limited direction and makes sound decisions when strategy is not yet set.',
+      'Scope & Influence': 'Scope spans multiple teams/pods, or a product portfolio. May manage ICs or manage one or two other managers. Responsible for design quality and team health across multiple teams/pods. Builds the team — hires, develops, and retains strong designers. Influences design standards across multiple product areas. Shapes product roadmaps through design leadership.',
+      'Collaboration + Process': 'Partners effectively with senior PM, Engineering, and Research leaders across a product portfolio. Influences product and business decisions through the design lens. Builds critique and review processes across multiple teams. Creates org-level mechanisms that improve design quality and delivery. Builds documentation knowledge sharing practices across multiple teams. Manages complex escalations across teams.',
+      'Communication': 'Communicates design strategy and team performance to senior leadership persuasively. Tells a clear story connecting design quality to product outcomes. Aligns diverse stakeholders across a portfolio.',
+      'Design Management & Judgment': '<span class="criteria-bold">Team + People Leadership:</span> Effectively hires, manages performance, coaches, and promotes. Builds succession plans. Addresses complex performance situations. Develops design managers and senior ICs. Builds a culture of feedback and growth.<br><span class="criteria-bold">Design Craft:</span> Sets craft principles that teams follow. Recognizes systemic quality issues and creates mechanisms to address them at scale.<br><span class="criteria-bold">Technical Craft:</span> Establishes consistent prototyping and implementation practices across teams to reduce rework and handoff friction. Builds team fluency in systems thinking. Identifies systemic workflow gaps and evolves tooling and processes to close them.',
+      'Impact': 'Moderate impact to the teams output metrics/goals. Impacts design quality and product outcomes across a portfolio.'
+    }
+  },
+  'm9': {
+    title: 'L9 — Design Director', years: '12+ years (incl. 5+ yrs managing)',
+    dims: {
+      'Ambiguity': 'Requirements, customers\' needs, and technical feasibility may not be fully defined, and work may span multiple teams or organizations. Delivers with complete autonomy. Owns strategy across a portfolio of products and connects multiple teams under a unified approach. Determines the right path when no clear answer exists.',
+      'Scope & Influence': 'Scope is a portfolio or multiple teams spanning a portion of the business unit. Shapes design standards and practices across EPD. Typically manages a group of managers. Accountable for the design vision, quality, and culture across a significant part of the business. Influences how design is resourced and structured with XFN peers. Shapes long-term product strategy through design leadership.',
+      'Collaboration + Process': 'Aligns cross-functional partners on design strategy before work starts. Gets product, engineering, content, and research to agree early. Drives adoption of new patterns and practices. Creates mechanisms that improve cross-team efficiency. Establishes org-level standards for how design knowledge gets captured and shared.',
+      'Communication': 'Communicates design strategy across multiple teams and disciplines. Facilitates alignment conversations across the org. Influences without authority through compelling narratives. Leads and presents in org-level reviews and critiques.',
+      'Design Management & Judgment': '<span class="criteria-bold">Team + People Leadership:</span> Leads an organization of designers and design managers. Sets vision, values, and culture for the org. Ensures the right people are in the right roles. Builds succession plans and creates leadership opportunities. Creates scalable mechanisms for career development.<br><span class="criteria-bold">Design Craft:</span> Defines what great design means across a product area. Drives synthesis of competing inputs to set long-term vision. Establishes frameworks, principles, and review mechanisms that raise craft quality.<br><span class="criteria-bold">Technical Craft:</span> Sets AI adoption priorities and defines how AI tools change designers\' ways of working. Partners with Product and Engineering leadership to improve and scale design-to-production tooling. Invests in infrastructure that enables continuous improvement of design quality at scale.',
+      'Impact': 'High impact at the organization level for high priority goals.'
+    }
+  },
+  'm10': {
+    title: 'L10 — Senior Design Director', years: '15+ years (incl. 8+ yrs managing)',
+    dims: {
+      'Ambiguity': 'Strategy is not defined and may span multiple organizations. Delivers with complete autonomy. Owns strategy across business units. Decides strategic priorities that shape product roadmaps and org-level design direction. Creates direction for ambiguous problems — defines what the strategy should be.',
+      'Scope & Influence': 'Scope spans multiple organizations. Typically manages an org with multiple layers and functions. Accountable for design vision, team health, talent strategy, and culture across a significant portion of PayPal\'s design organization. Influences design standards and frameworks across EPD. Shapes business strategy through the design lens.',
+      'Collaboration + Process': 'Partners effectively across EPD at scale. Influences business decisions at the leadership level. Shows senior leaders how design strategy connects to business outcomes. Defines and optimizes org-level processes and frameworks that accelerate design delivery. Builds the infrastructure and culture that makes knowledge sharing a consistent practice at scale.',
+      'Communication': 'Presents strategy persuasively to senior leadership. Translates design decisions into business terms. Creates frameworks and artifacts that communicate complex systems clearly. Aligns diverse stakeholders around a shared vision. Leads cross-org design reviews.',
+      'Design Management & Judgment': '<span class="criteria-bold">Team + People Leadership:</span> Leads a multi-layered design organization. Partners with EPD leadership on org design and headcount. Makes hiring and promotion decisions that shape long-term capability. Develops design directors and senior design managers. Builds a culture where designers do the best work of their careers.<br><span class="criteria-bold">Design Craft:</span> Defines craft principles for the organization. Builds design frameworks that multiple orgs depend on. Exceptional judgment recognized across PayPal. Ensures systems scale across products, platforms, and markets. Influences company-wide quality standards.<br><span class="criteria-bold">Technical Craft:</span> Sets long-term direction for design infrastructure and operational maturity. Ensures design systems, tooling, and governance enable global scale and cross-platform consistency. Defines the organizational investment strategy for AI-assisted design.',
+      'Impact': 'Significantly high impact at the business unit level.'
+    }
+  }
+};
+
+var IC_TRANSITIONS = {
+  '56': {
+    from: 'L5', to: 'L6',
+    dims: {
+      'Ambiguity': ['You move forward on design problems even when requirements are incomplete — not just when everything is clearly defined.','You identify what\'s unclear and take steps to resolve it — through research, conversation, or experimentation — rather than waiting for direction.','You make design decisions within established systems with confidence, and know when to escalate vs. when to push through ambiguity on your own.'],
+      'Scope & Influence': ['You consistently take ownership of an entire product area — not just individual features or flows.','You spot patterns and issues across related features, and connect them into a coherent experience.','You actively review others\' work and provide feedback that raises quality — not just your own deliverables.'],
+      'Collaboration + Process': ['You proactively bring XFN partners into design decisions early, not just for sign-off.','You lead critiques and give feedback that improves the work — not just validates it.','You document your design decisions in a way others can learn from and build on.'],
+      'Communication': ['You can present your work to senior leadership with confidence, without heavy prep support.','You frame design decisions in terms of customer and business outcomes, not just craft choices.','When you present options, you make your recommendation clear and explain the trade-offs honestly.'],
+      'Craft & Design Judgment': ['You consistently use data and research to challenge assumptions — not just validate existing design directions.','You identify gaps in customer understanding and proactively propose research to fill them.','Your designs anticipate edge cases and error states — not just the happy path.','You actively contribute to the design system by identifying opportunities to consolidate patterns.','Your design judgment is trusted by your team without requiring frequent check-ins.','You can demonstrate how AI tools have meaningfully accelerated your process or improved output quality.','You have shipped at least one frontend or content change independently without engineering handoff.'],
+      'Impact': ['You can point to specific design decisions that had measurable customer or business impact.','You connect your work to product KPIs, not just design quality metrics.','Your work has improved or simplified an experience beyond the scope of a single feature.']
+    }
+  },
+  '67': {
+    from: 'L6', to: 'L7',
+    dims: {
+      'Ambiguity': ['You own design strategy that spans multiple products or a full pod — not just a single product area.','You navigate ambiguity where the strategy itself is unclear, and define the path forward rather than waiting for it to be set.','You make high-judgment trade-offs with limited guidance and can articulate why you chose one direction over another.'],
+      'Scope & Influence': ['You identify patterns and inconsistencies across multiple products — not just within a single product area.','You build solutions that scale beyond your immediate team, creating systems or frameworks others adopt.','You actively mentor and develop other designers, raising the quality bar through your reviews and guidance.'],
+      'Collaboration + Process': ['You lead design critiques and raise the quality bar across your area — not just participate in them.','You create reusable documentation and systems that improve how the broader team works, not just your own projects.','You anticipate blockers before they stall progress and engage partners early to maintain momentum.'],
+      'Communication': ['You communicate design strategy across multiple teams and disciplines — not just within your own product area.','You facilitate alignment conversations and influence decisions without direct authority, using compelling narratives.','You create documentation that enables others to reuse your decisions and reasoning at scale.'],
+      'Craft & Design Judgment': ['You synthesize conflicting data sources to inform design decisions — not just aggregate data that points in one direction.','You create new design patterns and systems when existing ones don\'t scale, and set the quality bar for your product areas.','You ship frontend changes independently and build reusable tools and templates that accelerate the team\'s workflow.'],
+      'Impact': ['Your design decisions have measurable impact across multiple products — not just within a single product area.','You influence product roadmaps and org-level goals, connecting design outcomes to business metrics.','You create AI workflows that demonstrably improve team efficiency and share them broadly.']
+    }
+  },
+  '78': {
+    from: 'L7', to: 'L8',
+    dims: {
+      'Ambiguity': ['You define what the strategy should be when none exists — not just execute on a strategy someone else set.','You operate with complete autonomy across business units, deciding strategic priorities that shape product roadmaps.','You create direction for problems that span multiple organizations, where the path forward is fundamentally ambiguous.'],
+      'Scope & Influence': ['Your scope spans multiple organizations — not just a product portfolio or pod.','You anticipate design needs based on business direction before they become urgent, building systems that work across orgs.','You coach staff-level designers and ensure PayPal feels coherent as a unified experience across multiple organizations.'],
+      'Collaboration + Process': ['You partner across EPD at scale and influence business decisions at the leadership level — not just within your design org.','You define what great cross-functional collaboration looks like and build frameworks that multiple orgs depend on.','You manage complex escalations independently and create the conditions for teams to stay unblocked proactively.'],
+      'Communication': ['You translate design decisions into business terms that resonate with senior leadership — not just design rationale.','You create frameworks and artifacts that communicate complex systems clearly and align diverse stakeholders around a shared vision.','You lead cross-org reviews and present persuasively to the most senior audiences.'],
+      'Craft & Design Judgment': ['Your synthesis drives customer insights and business opportunities across the org — not just within your product area.','You define craft principles and set standards for the discipline that are recognized across PayPal.','You own end-to-end implementation for complex cross-team features and define the playbooks that determine what gets automated vs. what requires human craft judgment.'],
+      'Impact': ['Your work shapes business strategy through the design lens — not just improves existing customer experiences.','You impact metrics like transaction volume, merchant acquisition, and platform adoption through design decisions.','You establish AI XD standards and lead organizational AI adoption, moving beyond individual workflows to org-wide capability.']
+    }
+  },
+  '89': {
+    from: 'L8', to: 'L9',
+    dims: {
+      'Ambiguity': ['You set company-wide design standards and define the principles that guide all product design — not just direction for your business units.','You deliver with discernment, knowing when to act and when to hold back, across the full company scope.','You define what great design means at PayPal in a way that others use as their compass.'],
+      'Scope & Influence': ['You tackle the most challenging design problems at the company level — endemic challenges, global risks, and trade-offs between innovation, cost, and brand trust.','You ensure PayPal feels coherent as a unified experience company-wide, not just across your organizations.','You raise the bar for design excellence in a way that is visible and felt across the entire company.'],
+      'Collaboration + Process': ['You represent design at the company leadership level — not just within EPD.','You set the bar for how design knowledge gets captured and shared, ensuring it is accessible to anyone across the org who needs it.','You manage the most challenging and high-visibility escalations and shape how the organization identifies and resolves roadblocks.'],
+      'Communication': ['You communicate at the executive level with authority and clarity — not just persuasively to senior leadership.','You shape the narrative around design\'s role and value at PayPal, influencing how others think and talk about design.','You deliver highly effective presentations autonomously to the most senior leaders without support.'],
+      'Craft & Design Judgment': ['Your synthesis drives potentially category-defining choices across the company — not just insights within your org.','You set the company quality bar and define what excellence means. Others look to your work as the standard, with industry-recognized craft excellence.','You determine the automation boundary across the org and make it stick through tooling and governance.'],
+      'Impact': ['Your decisions have long-term bottom-line impact on the business — not just customer experience improvements.','You drive long-term strategy and set design vision at the company level, with impact on areas like new market entry and category leadership.','You shape industry thinking on AI in fintech XD, extending your influence beyond PayPal.']
+    }
+  },
+  '910': {
+    from: 'L9', to: 'L10',
+    dims: {
+      'Ambiguity': ['You anticipate paradigm shifts in design, technology, or the market and design for them before others see the need.','Your strategic vision extends beyond PayPal, shaping how the broader industry thinks about design in financial services.','You don\'t just set standards — you redefine what\'s possible and create new frameworks that others follow.'],
+      'Scope & Influence': ['Your decisions affect how hundreds of millions of people experience financial services — the stakes extend well beyond PayPal.','You play a key role in corporate strategy through design, positioning PayPal as a design leader in fintech.','You are recognized as an industry leader through external thought leadership, speaking, and conferences.'],
+      'Collaboration + Process': ['You shape how design collaborates across the entire company — not just within business units.','Your shared references and frameworks extend beyond PayPal, becoming industry resources that others adopt.','You establish executive-level partnerships and drive patterns adopted across multiple organizations.'],
+      'Communication': ['You set the standard for design communication at PayPal and in the industry — not just within the company.','You communicate complex design vision in ways that inspire action at every level, from individual contributors to executives.','You represent PayPal design externally through speaking, publishing, and industry engagement.'],
+      'Craft & Design Judgment': ['You proactively analyze trends to anticipate future customer needs — not just respond to current ones.','You define what "good" means for digital financial services before others have articulated it, fundamentally advancing how the discipline is practiced.','You define the org\'s design-to-production pipeline with measurable improvements in speed-to-ship and design quality, creating methodology that changes how designers across PayPal work.'],
+      'Impact': ['Your decisions have bottom-line impact on PayPal\'s competitive position — not just on products or business strategy.','Your work shapes how hundreds of millions of people understand and interact with money.','You define new product categories and set the direction for AI ethics in product design at an industry level.']
+    }
+  }
+};
+
+var DIM_ICONS = {
+  'Ambiguity': { icon: '🌫️', color: '#EDE9FE', text: '#4C1D95' },
+  'Scope & Influence': { icon: '🔭', color: '#FEF3C7', text: '#92400E' },
+  'Collaboration + Process': { icon: '🤝', color: '#D1FAE5', text: '#065F46' },
+  'Communication': { icon: '💬', color: '#DBEAFE', text: '#1E40AF' },
+  'Craft & Design Judgment': { icon: '🎨', color: '#FCE7F3', text: '#831843' },
+  'Design Management & Judgment': { icon: '👥', color: '#FCE7F3', text: '#831843' },
+  'Impact': { icon: '📈', color: '#FEE2E2', text: '#991B1B' }
+};
+
+// ── STATE ──────────────────────────────────────────
+var goals = [];
+var goalCount = 0;
+
+// ── PERSISTENCE ──────────────────────────────────────────
+function getKey(k) { return 'xdca_' + k; }
+function save(k, v) { try { localStorage.setItem(getKey(k), JSON.stringify(v)); } catch(e){} }
+function load(k, def) { try { var v = localStorage.getItem(getKey(k)); return v !== null ? JSON.parse(v) : def; } catch(e) { return def; } }
+
+function saveEvidence(key, val) { save('ev_' + key, val); }
+function loadEvidence(key) { return load('ev_' + key, ''); }
+function saveCheck(key, val) { save('chk_' + key, val); }
+function loadCheck(key) { return load('chk_' + key, false); }
+
+function saveProfile() {
+  save('profile', {
+    name: document.getElementById('setup-name').value,
+    role: document.getElementById('setup-role').value,
+    roledesc: document.getElementById('setup-roledesc').value,
+    rolestart: document.getElementById('setup-rolestart').value,
+    satisfaction: document.getElementById('setup-satisfaction').value,
+    track: TRACK,
+    level: LEVEL
+  });
+}
+
+function saveGoals() { save('goals', goals); }
+function saveReflection() { save('reflection', document.getElementById('reflection-text').value); }
+
+function loadAll() {
+  var profile = load('profile', null);
+  if (profile) {
+    document.getElementById('setup-name').value = profile.name || '';
+    document.getElementById('setup-role').value = profile.role || '';
+    document.getElementById('setup-roledesc').value = profile.roledesc || '';
+    document.getElementById('setup-rolestart').value = profile.rolestart || '';
+    if (profile.track) setTrack(profile.track, true);
+    if (profile.level) selectLevel(profile.level, true);
+    if (profile.rolestart) updateTimeInRole();
+    if (profile.satisfaction !== undefined) {
+      document.getElementById('setup-satisfaction').value = profile.satisfaction;
+      updateSatisfaction();
+    }
+  }
+  goals = load('goals', []);
+  if (goals.length === 0) {
+    goals = [{id:1,title:'',desc:''},{id:2,title:'',desc:''},{id:3,title:'',desc:''}];
+    goalCount = 3;
+  } else {
+    goalCount = Math.max.apply(null, goals.map(function(g){return g.id||0;}));
+  }
+
+}
+
+// ── TIME IN ROLE ──────────────────────────────────────────
+function updateTimeInRole() {
+  var val = document.getElementById('setup-rolestart').value;
+  var badge = document.getElementById('time-in-role-badge');
+  if (!val || !badge) return;
+  var start = new Date(val + 'T00:00:00');
+  var now = new Date();
+  var totalMonths = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+  if (now.getDate() < start.getDate()) totalMonths--;
+  if (totalMonths < 0) { badge.classList.add('hidden'); return; }
+  var years = Math.floor(totalMonths / 12);
+  var months = totalMonths % 12;
+  var parts = [];
+  if (years > 0) parts.push(years + ' year' + (years !== 1 ? 's' : ''));
+  if (months > 0) parts.push(months + ' month' + (months !== 1 ? 's' : ''));
+  if (parts.length === 0) parts.push('Less than 1 month');
+  badge.textContent = '⏱ ' + parts.join(', ') + ' in this role';
+  badge.classList.remove('hidden');
+}
+
+// ── HELPERS ──────────────────────────────────────────
+function getTimeInRoleText() {
+  var profile = load('profile', {});
+  if (!profile.rolestart) return null;
+  var start = new Date(profile.rolestart + 'T00:00:00');
+  var now = new Date();
+  var totalMonths = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+  if (now.getDate() < start.getDate()) totalMonths--;
+  if (totalMonths < 0) return null;
+  var years = Math.floor(totalMonths / 12);
+  var months = totalMonths % 12;
+  var parts = [];
+  if (years > 0) parts.push(years + ' yr' + (years !== 1 ? 's' : ''));
+  if (months > 0) parts.push(months + ' mo');
+  if (parts.length === 0) parts.push('< 1 mo');
+  return parts.join(', ');
+}
+
+function getSatisfactionLabel(val) {
+  var n = parseInt(val);
+  if (n <= 2) return 'Not satisfied';
+  if (n <= 4) return 'Dissatisfied';
+  if (n <= 6) return 'Neutral';
+  if (n <= 8) return 'Satisfied';
+  return 'Very satisfied';
+}
+
+function updateSatisfaction() {
+  var el = document.getElementById('setup-satisfaction');
+  if (!el) return;
+  var val = el.value;
+  document.getElementById('satisfaction-num').textContent = val;
+  document.getElementById('satisfaction-label').textContent = getSatisfactionLabel(val);
+}
+
+function saveIdealRole() {
+  save('idealrole', {
+    desc: document.getElementById('ideal-role-desc').value,
+    fit: document.getElementById('ideal-fit-pct').value
+  });
+}
+
+function updateFitPct() {
+  var val = parseInt(document.getElementById('ideal-fit-pct').value);
+  document.getElementById('fit-pct-num').textContent = val + '%';
+  document.getElementById('fit-pct-bar').style.width = val + '%';
+  var label = val < 20 ? 'Very little of your current role aligns with your ideal.'
+    : val < 40 ? 'Some overlap, but your current role is quite different from your ideal.'
+    : val < 60 ? 'About half of your current role aligns with your ideal.'
+    : val < 80 ? 'A good amount of your current role aligns \u2014 you\'re closer than you might think.'
+    : 'Your current role closely matches your ideal. You\'re largely doing what you love.';
+  document.getElementById('fit-pct-label').textContent = label;
+}
+
+// ── NAVIGATION ──────────────────────────────────────────
+var TAB_ORDER = ['setup', 'current', 'next', 'ideal', 'goals', 'summary'];
+
+function showTab(id) {
+  var currentIdx = TAB_ORDER.indexOf(id);
+  TAB_ORDER.forEach(function(t) {
+    var p = document.getElementById('page-' + t);
+    var b = document.getElementById('tab-' + t);
+    if (p) p.classList.toggle('active', t === id);
+    if (b) b.classList.toggle('active', t === id);
+  });
+  // Update breadcrumb
+  TAB_ORDER.forEach(function(t, i) {
+    var bc = document.getElementById('bc-' + t);
+    if (!bc) return;
+    bc.classList.remove('bc-active', 'bc-done');
+    if (t === id) bc.classList.add('bc-active');
+    else if (i < currentIdx) bc.classList.add('bc-done');
+  });
+  if (id === 'current') renderCurrentLevel();
+  if (id === 'next') renderNextLevel();
+  if (id === 'ideal') renderIdealRole();
+  if (id === 'goals') renderGoals();
+  if (id === 'summary') renderSummary();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setTrack(track, silent) {
+  TRACK = track;
+  document.getElementById('track-ic').classList.toggle('active', track === 'ic');
+  document.getElementById('track-mgr').classList.toggle('active', track === 'mgr');
+  document.getElementById('level-grid-ic').style.display = track === 'ic' ? 'grid' : 'none';
+  document.getElementById('level-grid-mgr').style.display = track === 'mgr' ? 'grid' : 'none';
+  // Reset level selection
+  LEVEL = track === 'ic' ? '6' : 'm7';
+  document.querySelectorAll('.level-btn').forEach(function(b){ b.classList.remove('selected'); });
+  var btn = document.querySelector('.level-btn[data-lvl="' + LEVEL + '"]');
+  if (btn) btn.classList.add('selected');
+  if (!silent) saveProfile();
+}
+
+function selectLevel(lvl, silent) {
+  LEVEL = lvl;
+  document.querySelectorAll('.level-btn').forEach(function(b){ b.classList.remove('selected'); });
+  var btn = document.querySelector('.level-btn[data-lvl="' + lvl + '"]');
+  if (btn) btn.classList.add('selected');
+  if (!silent) saveProfile();
+}
+
+function goToAssessment() {
+  saveProfile();
+  showTab('current');
+}
+
+// ── CURRENT LEVEL RENDERER ──────────────────────────────────────────
+function getLevelData() {
+  if (TRACK === 'ic') return IC_LEVELS[LEVEL] || IC_LEVELS['6'];
+  return MGR_LEVELS[LEVEL] || MGR_LEVELS['m7'];
+}
+
+function renderCurrentLevel() {
+  var data = getLevelData();
+  var profile = load('profile', {});
+  var name = profile.name || '—';
+  var role = profile.role || '—';
+
+  document.getElementById('disp-name').textContent = name;
+  document.getElementById('disp-role').textContent = role;
+  document.getElementById('disp-badge').textContent = data.title.split('—')[0].trim();
+  var tirText = getTimeInRoleText();
+  var tirWrap = document.getElementById('disp-tir-wrap');
+  if (tirText && tirWrap) {
+    document.getElementById('disp-tir').textContent = tirText;
+    tirWrap.style.display = 'block';
+  } else if (tirWrap) { tirWrap.style.display = 'none'; }
+
+  var rdWrap = document.getElementById('cur-roledesc-wrap');
+  var rdText = document.getElementById('cur-roledesc-text');
+  if (profile.roledesc && profile.roledesc.trim()) {
+    rdText.textContent = profile.roledesc;
+    rdWrap.style.display = 'block';
+  } else {
+    rdWrap.style.display = 'none';
+  }
+  document.getElementById('cur-level-title').textContent = data.title;
+  document.getElementById('cur-level-sub').textContent = data.years + ' experience · For each dimension, add your evidence below.';
+
+  var html = '';
+  var dims = Object.keys(data.dims);
+  dims.forEach(function(dim) {
+    var icon = DIM_ICONS[dim] || { icon: '◆', color: '#EDE9FE', text: '#4C1D95' };
+    var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g,'_');
+    var evVal = loadEvidence(evKey);
+    html += '<div class="card">';
+    html += '<div class="card-head" onclick="toggleCard(this)">';
+    html += '<div class="dim-icon" style="background:' + icon.color + ';color:' + icon.text + '">' + icon.icon + '</div>';
+    html += '<h3>' + dim + '</h3>';
+    html += '<span class="chevron open">▼</span>';
+    html += '</div>';
+    html += '<div class="card-body open">';
+    html += '<div class="criteria-box">' + data.dims[dim].replace(/\n/g, '<br>') + '</div>';
+    html += '<div class="evidence-label">My Evidence & Examples</div>';
+    html += '<textarea class="evidence-area" placeholder="Describe specific projects, decisions, or outcomes that demonstrate this. Be concrete: \'I did X which resulted in Y\'..." oninput="saveEvidence(\'' + evKey + '\',this.value)">' + evVal + '</textarea>';
+    html += '</div></div>';
+  });
+  document.getElementById('current-cards').innerHTML = html;
+}
+
+// ── NEXT LEVEL RENDERER ──────────────────────────────────────────
+function getNextLevel() {
+  if (TRACK === 'mgr') return null; // manager transitions not defined in framework
+  var map = { '5':'6', '6':'7', '7':'8', '8':'9', '9':'10' };
+  return map[LEVEL] || null;
+}
+
+function getTransitionKey() {
+  var next = getNextLevel();
+  if (!next) return null;
+  return LEVEL + next;
+}
+
+function renderNextLevel() {
+  var profile = load('profile', {});
+  document.getElementById('next-disp-name').textContent = profile.name || '—';
+  document.getElementById('next-disp-role').textContent = profile.role || '—';
+  var nextTirText = getTimeInRoleText();
+  var nextTirWrap = document.getElementById('next-disp-tir-wrap');
+  if (nextTirText && nextTirWrap) {
+    document.getElementById('next-disp-tir').textContent = nextTirText;
+    nextTirWrap.style.display = 'block';
+  } else if (nextTirWrap) { nextTirWrap.style.display = 'none'; }
+
+  var curData = getLevelData();
+  var curBadge = document.getElementById('next-disp-cur');
+  curBadge.textContent = curData.title.split('—')[0].trim();
+
+  var next = getNextLevel();
+  var tgtBadge = document.getElementById('next-disp-tgt');
+
+  if (!next) {
+    tgtBadge.textContent = '—';
+    document.getElementById('transition-cards').innerHTML = '';
+    document.getElementById('no-transition').style.display = 'block';
+    document.getElementById('next-progress-wrap').style.display = 'none';
+    document.getElementById('next-level-title').textContent = 'You\'re at the Top';
+    return;
+  }
+
+  var nextData = TRACK === 'ic' ? IC_LEVELS[next] : null;
+  tgtBadge.textContent = nextData ? nextData.title.split('—')[0].trim() : ('L' + next);
+  document.getElementById('next-level-title').textContent = 'Getting to ' + (nextData ? nextData.title : 'Next Level');
+  document.getElementById('no-transition').style.display = 'none';
+  document.getElementById('next-progress-wrap').style.display = 'block';
+
+  var tKey = getTransitionKey();
+  var trans = IC_TRANSITIONS[tKey];
+  if (!trans) {
+    document.getElementById('transition-cards').innerHTML = '<p style="color:var(--muted);font-size:13px;padding:16px;">Transition data not available for this level.</p>';
+    return;
+  }
+
+  var html = '';
+  var totalBehaviors = 0;
+  var dims = Object.keys(trans.dims);
+  dims.forEach(function(dim) {
+    var icon = DIM_ICONS[dim] || { icon: '◆', color: '#EDE9FE', text: '#4C1D95' };
+    var behaviors = trans.dims[dim];
+    totalBehaviors += behaviors.length;
+
+    html += '<div class="card">';
+    html += '<div class="card-head" onclick="toggleCard(this)">';
+    html += '<div class="dim-icon" style="background:' + icon.color + ';color:' + icon.text + '">' + icon.icon + '</div>';
+    html += '<h3>' + dim + '</h3>';
+    html += '<span class="chevron open">▼</span>';
+    html += '</div>';
+    html += '<div class="card-body open">';
+    html += '<div class="next-chip">Behaviors needed for ' + trans.from + ' → ' + trans.to + '</div>';
+
+    behaviors.forEach(function(beh, i) {
+      var chkKey = 'chk_' + TRACK + '_' + tKey + '_' + dim.replace(/\s+/g,'_') + '_' + i;
+      var evKey = 'ev_next_' + TRACK + '_' + tKey + '_' + dim.replace(/\s+/g,'_') + '_' + i;
+      var isChecked = loadCheck(chkKey);
+      var evVal = loadEvidence(evKey);
+
+      html += '<div class="behavior-item">';
+      html += '<div class="behavior-check ' + (isChecked ? 'checked' : '') + '" onclick="toggleBehavior(\'' + chkKey + '\',this)" title="Check when you have a strong example"></div>';
+      html += '<div class="behavior-text">';
+      html += '<p>' + beh + '</p>';
+      html += '<div class="behavior-evidence">';
+      html += '<div class="evidence-label" style="margin-top:6px">My Example</div>';
+      html += '<textarea class="evidence-area" style="min-height:60px" placeholder="Specific project or situation where you demonstrated this..." oninput="saveEvidence(\'' + evKey + '\',this.value)">' + evVal + '</textarea>';
+      html += '</div></div></div>';
+    });
+
+    html += '</div></div>';
+  });
+
+  document.getElementById('transition-cards').innerHTML = html;
+  updateProgress(tKey);
+}
+
+function toggleBehavior(key, el) {
+  var newVal = !el.classList.contains('checked');
+  el.classList.toggle('checked', newVal);
+  saveCheck(key, newVal);
+  var tKey = getTransitionKey();
+  if (tKey) updateProgress(tKey);
+}
+
+function updateProgress(tKey) {
+  var trans = IC_TRANSITIONS[tKey];
+  if (!trans) return;
+  var total = 0, checked = 0;
+  Object.keys(trans.dims).forEach(function(dim) {
+    trans.dims[dim].forEach(function(beh, i) {
+      total++;
+      var chkKey = 'chk_' + TRACK + '_' + tKey + '_' + dim.replace(/\s+/g,'_') + '_' + i;
+      if (loadCheck(chkKey)) checked++;
+    });
+  });
+  var pct = total > 0 ? Math.round(checked / total * 100) : 0;
+  document.getElementById('progress-count').textContent = checked + ' / ' + total + ' checked';
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+// ── GOALS RENDERER ──────────────────────────────────────────
+// ── GOAL EVALUATOR ──────────────────────────────────────────
+var DIM_KEYWORDS = {
+  'Ambiguity': ['strateg', 'undefined', 'unclear', 'ambig', 'navigat', 'discover', 'uncertainty', 'unstructured', 'no clear', 'figure out', 'find the path', 'define direction', 'explore options', 'shifting', 'determine what'],
+  'Scope & Influence': ['product area', 'product portfolio', 'multiple product', 'cross-product', 'cross-team', 'portfolio', 'mentor', 'platform', 'architecture', 'scale', 'pattern', 'system', 'influence product', 'shape roadmap', 'pod', 'extend pattern', 'create system', 'design system', 'framework', 'broader team'],
+  'Collaboration + Process': ['cross-functional', 'xfn', 'stakeholder', 'align', 'critique', 'feedback', 'process', 'document', 'partner', 'collaborate', 'working with', 'knowledge shar', 'review cycle', 'ways of working', 'team norms', 'handoff', 'coordinate'],
+  'Communication': ['present', 'leadership', 'executive', 'narrative', 'storytell', 'influence without', 'articulate', 'communicate design', 'persuad', 'speak', 'present to', 'communicate strategy', 'senior leader'],
+  'Craft & Design Judgment': ['design system', 'prototype', 'ai tool', 'craft', 'user research', 'usability', 'accessibility', 'component', 'interaction', 'visual design', 'design quality', 'pattern', 'figma', 'design principle', 'design standard', 'judgment', 'content design', 'motion', 'data-inform', 'qual', 'quant', 'research'],
+  'Impact': ['metric', 'kpi', 'conversion', 'engagement', 'adoption', 'revenue', 'nps', 'measur', 'business outcome', 'goal', 'growth', 'performance', 'task completion', 'success rate', 'retention', 'satisfaction', 'business impact', 'customer outcome']
+};
+
+var DIM_PILL_STYLES = {
+  'Ambiguity':             { bg: '#EDE9FE', text: '#4C1D95', icon: '🌫️' },
+  'Scope & Influence':     { bg: '#FEF3C7', text: '#92400E', icon: '🔭' },
+  'Collaboration + Process':{ bg: '#D1FAE5', text: '#065F46', icon: '🤝' },
+  'Communication':         { bg: '#DBEAFE', text: '#1E40AF', icon: '💬' },
+  'Craft & Design Judgment':{ bg: '#FCE7F3', text: '#831843', icon: '🎨' },
+  'Impact':                { bg: '#FEE2E2', text: '#991B1B', icon: '📈' }
+};
+
+var LEVEL_SCOPE = {
+  '5':  { label: 'feature-level', indicators: ['single feature', 'one flow', 'specific screen', 'assigned', 'given feature', 'a feature', 'one screen', 'the feature'], scope: 5 },
+  '6':  { label: 'product-area level', indicators: ['product area', 'checkout', 'consumer', 'merchant', 'payments', 'my product', 'product team', 'end to end', 'entire product', 'own the product'], scope: 6 },
+  '7':  { label: 'portfolio / multi-team level', indicators: ['portfolio', 'multiple product', 'cross-product', 'pod', 'cross-team', 'multiple team'], scope: 7 },
+  '8':  { label: 'cross-org / business unit level', indicators: ['multiple org', 'business unit', 'cross-org', 'enterprise', 'across org', 'business strategy', 'entire org'], scope: 8 },
+  '9':  { label: 'company-wide', indicators: ['company-wide', 'company level', 'all of paypal', 'entire company', 'company standard'], scope: 9 },
+  '10': { label: 'industry-level', indicators: ['industry', 'external', 'beyond paypal', 'conference', 'publish', 'paradigm', 'hundreds of millions'], scope: 10 }
+};
+
+var LEVEL_GROWTH_TIPS = {
+  '5':  'At L5, strong goals focus on delivering assigned features with quality, building your design craft, and starting to connect your work to team KPIs.',
+  '6':  'At L6, strong goals focus on owning a full product area end-to-end, mentoring at least one junior designer, shaping product strategy alongside PM and Eng, and demonstrating measurable product-level impact.',
+  '7':  'At L7, strong goals focus on driving cross-product consistency, building systems or frameworks other designers adopt, developing multiple designers, and influencing roadmaps across a pod or portfolio.',
+  '8':  'At L8, strong goals focus on defining design strategy across multiple orgs, building frameworks that scale across business units, and connecting design decisions to business-level outcomes like transaction volume or platform adoption.',
+  '9':  'At L9, strong goals focus on company-wide design standards, executive-level thought leadership, and decisions with long-term bottom-line impact on the business.',
+  '10': 'At L10, strong goals shape how hundreds of millions interact with financial services and position PayPal as a design leader in the industry.'
+};
+
+function evaluateGoal(goalId) {
+  var g = goals.find(function(g){ return g.id === goalId; });
+  if (!g || (!g.title && !g.desc)) {
+    var panel = document.getElementById('eval-' + goalId);
+    if (panel) { panel.classList.add('show'); panel.innerHTML = '<div class="eval-panel-head"><span>Evaluation</span></div><div class="eval-panel-body"><p class="eval-no-text">Add a title and description for this goal first.</p></div>'; }
+    return;
+  }
+
+  var text = ((g.title || '') + ' ' + (g.desc || '')).toLowerCase();
+  var levelNum = parseInt(LEVEL.replace('m',''));
+
+  // ── Score dimensions ──
+  var dimScores = {};
+  Object.keys(DIM_KEYWORDS).forEach(function(dim) {
+    var score = 0;
+    DIM_KEYWORDS[dim].forEach(function(kw) {
+      if (text.indexOf(kw) > -1) score += (kw.length > 8 ? 3 : 2);
+    });
+    dimScores[dim] = score;
+  });
+
+  // Always give a minimum signal to Craft if the word "design" appears (it's a design goal tool)
+  if (text.indexOf('design') > -1 && dimScores['Craft & Design Judgment'] === 0) dimScores['Craft & Design Judgment'] = 1;
+
+  var matchedDims = Object.keys(dimScores)
+    .filter(function(d){ return dimScores[d] > 0; })
+    .sort(function(a,b){ return dimScores[b] - dimScores[a]; });
+
+  // If nothing matched at all, give a general note
+  var noDimsFound = matchedDims.length === 0;
+
+  // ── Scope / level fit ──
+  var detectedScope = 0;
+  Object.keys(LEVEL_SCOPE).forEach(function(l) {
+    LEVEL_SCOPE[l].indicators.forEach(function(ind) {
+      if (text.indexOf(ind) > -1 && LEVEL_SCOPE[l].scope > detectedScope) {
+        detectedScope = LEVEL_SCOPE[l].scope;
+      }
+    });
+  });
+
+  var fitStatus, fitLabel, fitBg, fitColor, fitMsg;
+  if (detectedScope === 0 || detectedScope === levelNum) {
+    fitStatus = 'match';
+    fitLabel = detectedScope === 0 ? 'Scope unclear — add more detail' : 'Well-matched for ' + getLevelData().title.split('—')[0].trim();
+    fitBg = detectedScope === 0 ? '#F1F5F9' : '#D1FAE5';
+    fitColor = detectedScope === 0 ? '#475569' : '#065F46';
+    fitMsg = detectedScope === 0
+      ? 'The goal text doesn\'t clearly indicate its scope. Adding detail about what you\'ll own (a feature, a product area, a portfolio) will make it much stronger — and easier to evaluate against the framework. ' + LEVEL_GROWTH_TIPS[LEVEL] || ''
+      : 'This goal\'s scope aligns with what\'s expected at your level. ' + LEVEL_GROWTH_TIPS[LEVEL] || '';
+  } else if (detectedScope > levelNum) {
+    fitStatus = 'stretch';
+    fitLabel = 'Stretch — reads like ' + LEVEL_SCOPE[String(detectedScope)].label;
+    fitBg = '#DBEAFE';
+    fitColor = '#1E40AF';
+    fitMsg = 'This goal has the ambition of an L' + detectedScope + ' (' + LEVEL_SCOPE[String(detectedScope)].label + '). That\'s excellent if you have the scope and organizational support to execute it — and it could be a strong signal for your next level conversation. Confirm with your manager that the scope is available to you and that success will be visible.';
+  } else {
+    fitStatus = 'narrow';
+    fitLabel = 'Consider broadening — reads like ' + LEVEL_SCOPE[String(detectedScope)].label;
+    fitBg = '#FEF3C7';
+    fitColor = '#92400E';
+    fitMsg = 'This goal seems narrower than what\'s typically expected at your level. ' + LEVEL_GROWTH_TIPS[LEVEL] + ' Consider reframing this goal to reflect a broader scope of ownership or impact.';
+  }
+
+  // ── Build dimension-specific feedback ──
+  var dimFeedback = '';
+  if (!noDimsFound && matchedDims.length > 0) {
+    var top = matchedDims.slice(0, 3);
+    var dimNames = top.map(function(d){ return d; }).join(', ');
+    dimFeedback = ' Based on your description, this goal most directly supports: <strong>' + dimNames + '</strong>.';
+    if (matchedDims.indexOf('Impact') === -1 && matchedDims.length >= 2) {
+      dimFeedback += ' Consider adding a measurable outcome to strengthen the <strong>Impact</strong> dimension — linking this goal to a KPI, metric, or customer outcome will make it more compelling in a performance or promotion conversation.';
+    }
+  } else {
+    dimFeedback = ' Try describing specific outcomes, who you\'ll partner with, and what will be different when this goal is achieved — that will help surface which framework dimensions it addresses.';
+  }
+
+  // ── Build HTML ──
+  var html = '<div class="eval-panel-head"><span>📊 Goal Evaluation</span></div>';
+  html += '<div class="eval-panel-body">';
+
+  // Level fit badge
+  html += '<div class="eval-fit-badge" style="background:' + fitBg + ';color:' + fitColor + '">';
+  html += (fitStatus === 'match' && detectedScope > 0 ? '✓ ' : fitStatus === 'stretch' ? '↑ ' : fitStatus === 'narrow' ? '⚠ ' : '? ');
+  html += fitLabel + '</div>';
+
+  // Dimension pills
+  if (!noDimsFound && matchedDims.length > 0) {
+    html += '<div class="eval-dims-label">Framework Dimensions Supported</div>';
+    html += '<div class="eval-dim-pills">';
+    matchedDims.forEach(function(dim) {
+      var s = DIM_PILL_STYLES[dim] || { bg: '#E2E8F0', text: '#475569', icon: '◆' };
+      html += '<span class="eval-dim-pill" style="background:' + s.bg + ';color:' + s.text + '">' + s.icon + ' ' + dim + '</span>';
+    });
+    html += '</div>';
+  }
+
+  // Feedback text
+  html += '<div class="eval-feedback">' + fitMsg + dimFeedback + '</div>';
+  html += '</div>';
+
+  var panel = document.getElementById('eval-' + goalId);
+  if (panel) { panel.classList.add('show'); panel.innerHTML = html; }
+
+  // Persist evaluation results so they survive re-render
+  save('eval_' + goalId, { dims: matchedDims, fitLabel: fitLabel, fitBg: fitBg, fitColor: fitColor });
+}
+
+function renderGoals() {
+  var profile = load('profile', {});
+  document.getElementById('goals-disp-name').textContent = profile.name || '—';
+  document.getElementById('goals-disp-role').textContent = profile.role || '—';
+  var goalsTirText = getTimeInRoleText();
+  var goalsTirWrap = document.getElementById('goals-disp-tir-wrap');
+  if (goalsTirText && goalsTirWrap) {
+    document.getElementById('goals-disp-tir').textContent = goalsTirText;
+    goalsTirWrap.style.display = 'block';
+  } else if (goalsTirWrap) { goalsTirWrap.style.display = 'none'; }
+  var curData = getLevelData();
+  document.getElementById('goals-disp-badge').textContent = curData.title.split('—')[0].trim();
+
+  // Show role description if present
+  var rdWrap = document.getElementById('goals-roledesc-wrap');
+  var rdText = document.getElementById('goals-roledesc-text');
+  if (profile.roledesc && profile.roledesc.trim()) {
+    rdText.textContent = profile.roledesc;
+    rdWrap.style.display = 'block';
+  } else {
+    rdWrap.style.display = 'none';
+  }
+
+  // Render goals
+  var html = '';
+  goals.forEach(function(g, idx) {
+    html += '<div class="goal-card" id="gcard-' + g.id + '">';
+    html += '<div class="goal-row">';
+    html += '<div class="goal-number">' + (idx + 1) + '</div>';
+    html += '<div class="goal-inputs">';
+    html += '<input type="text" class="goal-title" placeholder="Goal title (e.g. Lead the end-to-end Checkout redesign)" value="' + escHtml(g.title) + '" oninput="updateGoal(' + g.id + ',\'title\',this.value)">';
+    html += '<textarea class="goal-desc" placeholder="Describe this goal: what you\'ll own, who you\'ll partner with, and what success looks like..." oninput="updateGoal(' + g.id + ',\'desc\',this.value)">' + escHtml(g.desc) + '</textarea>';
+    html += '</div>';
+    html += '<div style="flex-shrink:0;">';
+    html += '<button onclick="removeGoal(' + g.id + ')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;padding:4px 6px;line-height:1" title="Remove goal">×</button>';
+    html += '</div>';
+    html += '</div>';
+
+    html += '</div>';
+  });
+  document.getElementById('goals-list').innerHTML = html;
+
+
+}
+
+function addGoal() {
+  goalCount++;
+  goals.push({ id: goalCount, title: '', desc: '' });
+  saveGoals();
+  renderGoals();
+}
+
+function removeGoal(id) {
+  goals = goals.filter(function(g) { return g.id !== id; });
+  saveGoals();
+  renderGoals();
+}
+
+function updateGoal(id, field, val) {
+  var g = goals.find(function(g) { return g.id === id; });
+  if (g) { g[field] = val; saveGoals(); }
+}
+
+// ── IDEAL ROLE RENDERER ──────────────────────────────────────────
+function renderIdealRole() {
+  var profile = load('profile', {});
+  var curData = getLevelData();
+  document.getElementById('ideal-disp-name').textContent = profile.name || '—';
+  document.getElementById('ideal-disp-role').textContent = profile.role || '—';
+  var idealTirText = getTimeInRoleText();
+  var idealTirWrap = document.getElementById('ideal-disp-tir-wrap');
+  if (idealTirText && idealTirWrap) {
+    document.getElementById('ideal-disp-tir').textContent = idealTirText;
+    idealTirWrap.style.display = 'block';
+  } else if (idealTirWrap) { idealTirWrap.style.display = 'none'; }
+  document.getElementById('ideal-disp-badge').textContent = curData.title.split('—')[0].trim();
+  var ir = load('idealrole', {});
+  if (ir.desc) document.getElementById('ideal-role-desc').value = ir.desc;
+  if (ir.fit !== undefined) {
+    document.getElementById('ideal-fit-pct').value = ir.fit;
+    updateFitPct();
+  }
+}
+
+// ── SUMMARIZE → CLAUDE.AI ──────────────────────────────────────────
+function summarizePlan() {
+  var profile = load('profile', {});
+  var name = profile.name || 'Designer';
+  var role = profile.role || 'Not specified';
+  var roledesc = profile.roledesc || '';
+  var satisfaction = parseInt(profile.satisfaction || 5);
+  var tir = getTimeInRoleText() || 'Not specified';
+  var curData = getLevelData();
+  var levelTitle = curData.title;
+
+  // Collect current level evidence
+  var dims = Object.keys(curData.dims);
+  var evidenceLines = [];
+  dims.forEach(function(dim) {
+    var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g,'_');
+    var ev = (loadEvidence(evKey) || '').trim();
+    evidenceLines.push('  [' + dim + ']\n  Criteria: ' + curData.dims[dim].replace(/\n/g,' ') + '\n  My Evidence: ' + (ev || '(none yet)'));
+  });
+
+  // Collect next level behaviors
+  var tKey = getTransitionKey();
+  var nextData = null;
+  var behLines = [];
+  var checkedBeh = 0, totalBeh = 0;
+  if (tKey && IC_TRANSITIONS[tKey]) {
+    var trans = IC_TRANSITIONS[tKey];
+    var nextLevel = getNextLevel();
+    nextData = TRACK === 'ic' ? IC_LEVELS[nextLevel] : null;
+    Object.keys(trans.dims).forEach(function(dim) {
+      trans.dims[dim].forEach(function(beh, i) {
+        totalBeh++;
+        var ck = 'chk_' + TRACK + '_' + tKey + '_' + dim.replace(/\s+/g,'_') + '_' + i;
+        var checked = loadCheck(ck);
+        if (checked) checkedBeh++;
+        behLines.push('  [' + (checked ? 'X' : ' ') + '] ' + dim + ': ' + beh);
+      });
+    });
+  }
+
+  // Collect goals
+  var goalLines = [];
+  goals.filter(function(g) { return g.title && g.title.trim(); }).forEach(function(g, i) {
+    goalLines.push('  Goal ' + (i+1) + ': ' + g.title + (g.desc ? '\n  Detail: ' + g.desc : ''));
+  });
+
+  // Ideal role
+  var ir = load('idealrole', {});
+  var idealDesc = ir.desc || '';
+  var idealFit = parseInt(ir.fit !== undefined ? ir.fit : 50);
+
+  // Build prompt
+  var prompt = '# PayPal XD Career Navigation Evaluation\n\n';
+  prompt += 'Please evaluate the following career profile and provide structured feedback across four areas.\n\n';
+  prompt += '---\n\n';
+  prompt += '## DESIGNER PROFILE\n';
+  prompt += 'Name: ' + name + '\n';
+  prompt += 'Role: ' + role + '\n';
+  prompt += 'Time in Role: ' + tir + '\n';
+  prompt += 'Current Level: ' + levelTitle + '\n';
+  prompt += 'Role Satisfaction: ' + satisfaction + '/10\n';
+  if (roledesc) prompt += 'Role Description: ' + roledesc + '\n';
+  if (idealDesc) prompt += 'Ideal Role: ' + idealDesc + '\n  Current Fit: ' + idealFit + '%\n';
+  prompt += '\n---\n\n';
+
+  prompt += '## PART 1: CURRENT LEVEL EVIDENCE\n';
+  prompt += 'Evaluate the evidence provided for each competency dimension at ' + levelTitle + '.\n';
+  prompt += 'For each dimension: assess whether evidence is strong, developing, or needs work.\n';
+  prompt += 'Then give an overall completeness rating.\n\n';
+  prompt += 'Context: PayPal Design Principles are: Clarity, Empathy, Integrity, Craftsmanship, and Innovation.\n';
+  prompt += 'Team priorities (Steve, Mark, Rachel): product quality and craft, cross-functional influence, systems thinking, AI-forward design.\n\n';
+  evidenceLines.forEach(function(l) { prompt += l + '\n\n'; });
+  prompt += '\n---\n\n';
+
+  prompt += '## PART 2: NEXT LEVEL READINESS\n';
+  if (nextData) {
+    prompt += 'Target Level: ' + nextData.title + '\n';
+    prompt += 'Readiness Check: ' + checkedBeh + ' of ' + totalBeh + ' transition behaviors demonstrated\n\n';
+    prompt += 'Checked behaviors (X = demonstrated):\n';
+    behLines.forEach(function(l) { prompt += l + '\n'; });
+    prompt += '\nUsing the same PayPal principles and team goals above:\n';
+    prompt += '- Rate readiness: not ready / developing / ready / strong\n';
+    prompt += '- Identify the 2-3 highest-leverage behaviors to work on\n';
+    prompt += '- Flag any gaps between evidence quality and behavior check\n';
+  } else {
+    prompt += 'No transition data available for this track/level.\n';
+  }
+  prompt += '\n---\n\n';
+
+  prompt += '## PART 3: 2026 GOALS ANALYSIS\n';
+  if (goalLines.length > 0) {
+    prompt += 'For each goal:\n';
+    prompt += '- Evaluate against SMART criteria (Specific, Measurable, Achievable, Relevant, Time-bound)\n';
+    prompt += '- Assess alignment with PayPal team priorities (see above)\n';
+    prompt += '- Rate: Strong / On Track / Needs Refinement\n';
+    prompt += '- Flag any goals that seem misaligned with growth trajectory\n';
+    prompt += '- Note what each goal supports (current level evidence, next level readiness, or ideal role)\n\n';
+    goalLines.forEach(function(l) { prompt += l + '\n\n'; });
+  } else {
+    prompt += 'No goals entered yet.\n';
+  }
+  prompt += '\n---\n\n';
+
+  prompt += '## PART 4: CAREER NARRATIVE\n';
+  prompt += 'Synthesize all of the above into:\n';
+  prompt += '1. A concise career narrative paragraph (3-5 sentences) this designer could share with their manager\n';
+  prompt += '2. Top 3 recommended focus areas for the next 6 months\n';
+  prompt += '3. One question the designer should be asking their manager right now\n';
+  prompt += '\n---\n\n';
+  prompt += 'Format your response with clear headers for each Part. Be direct and specific.';
+
+  // Copy to clipboard and open Claude.ai
+  try {
+    navigator.clipboard.writeText(prompt).then(function() {
+      showClaudeModal(true);
+    }).catch(function() {
+      showClaudeModal(false, prompt);
+    });
+  } catch(e) {
+    showClaudeModal(false, prompt);
+  }
+}
+
+function showClaudeModal(copied, fallbackPrompt) {
+  var existing = document.getElementById('claude-modal');
+  if (existing) existing.remove();
+
+  var modal = document.createElement('div');
+  modal.id = 'claude-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+
+  var box = document.createElement('div');
+  box.style.cssText = 'background:#fff;border-radius:12px;padding:32px;max-width:520px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);position:relative';
+
+  var content = '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'
+    + '<div style="width:44px;height:44px;background:linear-gradient(135deg,#003087,#009CDE);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">✦</div>'
+    + '<div><h3 style="margin:0;font-size:17px;color:#003087">Get AI Feedback on Your Career Plan</h3>'
+    + '<p style="margin:4px 0 0;font-size:12px;color:#64748B">Your evaluation prompt is ready</p></div></div>';
+
+  if (copied) {
+    content += '<div style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:14px 16px;margin-bottom:18px">'
+      + '<p style="margin:0;font-size:13px;color:#15803D;font-weight:700">✓ Prompt copied to clipboard</p>'
+      + '<p style="margin:6px 0 0;font-size:12px;color:#166534">Your full career profile and evaluation criteria are ready to paste.</p></div>';
+  } else {
+    content += '<div style="background:#FEF9C3;border:1px solid #FDE047;border-radius:8px;padding:14px 16px;margin-bottom:12px">'
+      + '<p style="margin:0;font-size:13px;color:#854D0E;font-weight:700">⚠ Copy manually</p>'
+      + '<p style="margin:4px 0 0;font-size:12px;color:#713F12">Your browser blocked auto-copy. Select all text below and copy it.</p></div>'
+      + '<textarea style="width:100%;height:100px;font-size:10px;border:1px solid #E2E8F0;border-radius:6px;padding:8px;resize:vertical;margin-bottom:12px;font-family:monospace" onclick="this.select()">' + (fallbackPrompt || '').replace(/</g,'&lt;') + '</textarea>';
+  }
+
+  content += '<p style="font-size:13px;color:#475569;margin-bottom:18px">Click the button below to open Claude.ai in a new tab, then paste the prompt.</p>';
+  content += '<div style="display:flex;gap:10px">'
+    + '<button onclick="window.open(\'https://claude.ai/new\',\'_blank\');document.getElementById(\'claude-modal\').remove()" '
+    + 'style="flex:1;background:linear-gradient(135deg,#003087,#0070BA);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">Open Claude.ai →</button>'
+    + '<button onclick="document.getElementById(\'claude-modal\').remove()" '
+    + 'style="background:#fff;border:1px solid #E2E8F0;color:#475569;border-radius:8px;padding:12px 18px;font-size:13px;cursor:pointer">Cancel</button>'
+    + '</div>';
+
+  box.innerHTML = content;
+  modal.appendChild(box);
+  modal.addEventListener('click', function(e) { if (e.target === modal) modal.remove(); });
+  document.body.appendChild(modal);
+}
+
+// ── SUMMARY RENDERER ──────────────────────────────────────────
+function renderSummary() {
+  var profile = load('profile', {});
+  var name = profile.name || 'Designer';
+  var role = profile.role || '—';
+  var roledesc = profile.roledesc || '';
+  var satisfaction = parseInt(profile.satisfaction || 5);
+  var tir = getTimeInRoleText() || 'Not specified';
+  var curData = getLevelData();
+  var levelTitle = curData.title;
+
+  document.getElementById('sum-disp-name').textContent = name;
+  document.getElementById('sum-disp-role').textContent = role;
+  var sumTirText = getTimeInRoleText();
+  var sumTirWrap = document.getElementById('sum-disp-tir-wrap');
+  if (sumTirText && sumTirWrap) {
+    document.getElementById('sum-disp-tir').textContent = sumTirText;
+    sumTirWrap.style.display = 'block';
+  } else if (sumTirWrap) { sumTirWrap.style.display = 'none'; }
+  document.getElementById('sum-disp-badge').textContent = levelTitle.split('—')[0].trim();
+
+  var ir = load('idealrole', {});
+  var idealDesc = ir.desc || '';
+  var idealFit = parseInt(ir.fit !== undefined ? ir.fit : 50);
+
+  // Evidence filled
+  var dims = Object.keys(curData.dims);
+  var filledEvidence = 0;
+  dims.forEach(function(dim) {
+    var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g, '_');
+    if ((loadEvidence(evKey) || '').trim().length > 20) filledEvidence++;
+  });
+
+  // Next level readiness
+  var tKey = getTransitionKey();
+  var readinessPct = 0, totalBeh = 0, checkedBeh = 0;
+  var dimReadiness = {};
+  if (tKey && IC_TRANSITIONS[tKey]) {
+    var trans = IC_TRANSITIONS[tKey];
+    Object.keys(trans.dims).forEach(function(dim) {
+      var dimCk = 0;
+      trans.dims[dim].forEach(function(beh, i) {
+        totalBeh++;
+        var ck = 'chk_' + TRACK + '_' + tKey + '_' + dim.replace(/\s+/g, '_') + '_' + i;
+        if (loadCheck(ck)) { checkedBeh++; dimCk++; }
+      });
+      if (dimCk > 0) dimReadiness[dim] = dimCk + '/' + trans.dims[dim].length;
+    });
+    readinessPct = totalBeh > 0 ? Math.round(checkedBeh / totalBeh * 100) : 0;
+  }
+
+  // Goals with auto-evaluated dimensions
+  var goalSummaries = goals.filter(function(g) { return g.title && g.title.trim(); }).map(function(g) {
+    var text = ((g.title || '') + ' ' + (g.desc || '')).toLowerCase();
+    var matched = [];
+    Object.keys(DIM_KEYWORDS).forEach(function(dim) {
+      var score = 0;
+      DIM_KEYWORDS[dim].forEach(function(kw) { if (text.indexOf(kw) > -1) score++; });
+      if (score > 0) matched.push(dim);
+    });
+    return { title: g.title, desc: g.desc, dims: matched };
+  });
+
+  // Narrative
+  var next = getNextLevel();
+  var nextData = next && TRACK === 'ic' ? IC_LEVELS[next] : null;
+  var satLabel = getSatisfactionLabel(satisfaction);
+  var readinessWord = readinessPct >= 70 ? 'strong' : readinessPct >= 40 ? 'developing' : 'early-stage';
+  var satColor = satisfaction <= 4 ? '#DC2626' : satisfaction <= 6 ? '#D97706' : '#16A34A';
+  var readColor = readinessPct >= 70 ? '#16A34A' : readinessPct >= 40 ? '#D97706' : '#DC2626';
+
+  var narrative = name + ' is currently a ' + levelTitle + ' on the ' + (TRACK === 'ic' ? 'Individual Contributor' : 'Management') + ' track';
+  if (tir !== 'Not specified') narrative += ', with ' + tir + ' in this role';
+  narrative += '. ';
+  if (satisfaction >= 7) narrative += 'They report high satisfaction with their current role — a strong foundation for growth. ';
+  else if (satisfaction >= 5) narrative += 'They feel neutral about their current role. Aligning more of their work with their ideal role description could increase engagement. ';
+  else narrative += 'They report lower satisfaction with their current role. Moving toward the ideal role vision they\'ve described should be a priority in upcoming manager conversations. ';
+  if (filledEvidence > 0) narrative += 'They have documented evidence across ' + filledEvidence + ' of ' + dims.length + ' competency dimensions at their current level. ';
+  if (next && totalBeh > 0) narrative += 'For the transition to ' + (nextData ? nextData.title : 'the next level') + ', they show ' + readinessWord + ' readiness (' + readinessPct + '% of behaviors demonstrated). ';
+  if (idealDesc) narrative += 'Their ideal role is ' + (idealFit >= 70 ? 'closely aligned' : idealFit >= 40 ? 'partially aligned' : 'not yet reflected in') + ' their current work (' + idealFit + '% fit). ';
+  if (goalSummaries.length > 0) narrative += 'Their ' + goalSummaries.length + ' 2026 goal' + (goalSummaries.length !== 1 ? 's' : '') + ' address multiple framework dimensions and provide a clear path toward their growth objectives.';
+
+  // BUILD HTML
+  var h = '';
+
+  // Block 1 — Current State
+  h += '<div class="summary-block"><h3>Current State</h3>';
+  h += '<div class="summary-row"><span class="summary-key">Name</span><span class="summary-val">' + escHtml(name) + '</span></div>';
+  h += '<div class="summary-row"><span class="summary-key">Level</span><span class="summary-val"><span class="level-badge" style="font-size:12px;padding:3px 10px">' + escHtml(levelTitle.split('—')[0].trim()) + '</span>&nbsp; ' + escHtml((levelTitle.split('—')[1] || '').trim()) + '</span></div>';
+  h += '<div class="summary-row"><span class="summary-key">Role</span><span class="summary-val">' + escHtml(role) + '</span></div>';
+  h += '<div class="summary-row"><span class="summary-key">Time in Role</span><span class="summary-val">' + escHtml(tir) + '</span></div>';
+  h += '<div class="summary-row"><span class="summary-key">Satisfaction</span><span class="summary-val">';
+  h += '<span style="font-size:22px;font-weight:900;color:' + satColor + '">' + satisfaction + '/10</span> <span style="font-size:12px;color:var(--muted);font-weight:600">' + escHtml(satLabel) + '</span>';
+  h += '<div class="sat-pip-row">';
+  for (var i = 1; i <= 10; i++) h += '<div class="sat-pip' + (i <= satisfaction ? ' filled' : '') + '"></div>';
+  h += '</div></span></div>';
+  if (roledesc) h += '<div class="summary-row"><span class="summary-key">Role Description</span><span class="summary-val" style="white-space:pre-wrap;font-size:12px;color:var(--muted)">' + escHtml(roledesc) + '</span></div>';
+  h += '</div>';
+
+  // Block 2 — Evidence
+  h += '<div class="summary-block"><h3>Current Level Evidence</h3>';
+  if (filledEvidence === 0) {
+    h += '<p style="font-size:13px;color:var(--muted);font-style:italic">No evidence added yet — go to My Current Level to add examples for each dimension.</p>';
+  } else {
+    h += '<p style="font-size:13px;margin-bottom:12px">Evidence documented in <strong>' + filledEvidence + ' of ' + dims.length + '</strong> competency dimensions.</p>';
+    h += '<div style="display:flex;flex-wrap:wrap;gap:8px;">';
+    dims.forEach(function(dim) {
+      var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g, '_');
+      var filled = (loadEvidence(evKey) || '').trim().length > 20;
+      var ic = DIM_ICONS[dim] || { icon: '◆', color: '#EDE9FE', text: '#4C1D95' };
+      h += '<span style="padding:5px 11px;border-radius:20px;font-size:11px;font-weight:700;background:' + (filled ? ic.color : '#F1F5F9') + ';color:' + (filled ? ic.text : '#94A3B8') + '">' + ic.icon + ' ' + dim + (filled ? ' ✓' : '') + '</span>';
+    });
+    h += '</div>';
+  }
+  h += '</div>';
+
+  // Block 3 — Next Level Readiness
+  if (next && totalBeh > 0) {
+    h += '<div class="summary-block"><h3>Readiness for Next Level</h3>';
+    h += '<div class="readiness-stat"><div class="readiness-pct-big" style="color:' + readColor + '">' + readinessPct + '%</div>';
+    h += '<div class="readiness-sub">of behaviors demonstrated for ' + (nextData ? nextData.title : 'next level') + '<small>' + checkedBeh + ' of ' + totalBeh + ' transition behaviors checked</small></div></div>';
+    h += '<div class="progress-bar-wrap" style="margin-bottom:14px"><div class="progress-bar" style="width:' + readinessPct + '%"></div></div>';
+    if (Object.keys(dimReadiness).length > 0) {
+      h += '<p style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Demonstrated by Dimension</p>';
+      h += '<div style="display:flex;flex-wrap:wrap;gap:7px;">';
+      Object.keys(dimReadiness).forEach(function(dim) {
+        var ic = DIM_ICONS[dim] || { icon: '◆', color: '#EDE9FE', text: '#4C1D95' };
+        h += '<span style="padding:5px 11px;border-radius:20px;font-size:11px;font-weight:700;background:' + ic.color + ';color:' + ic.text + '">' + ic.icon + ' ' + dim + ' ' + dimReadiness[dim] + '</span>';
+      });
+      h += '</div>';
+    }
+    h += '</div>';
+  }
+
+  // Block 4 — Ideal Role
+  if (idealDesc) {
+    h += '<div class="summary-block"><h3>Ideal Role Vision</h3>';
+    h += '<div class="summary-row"><span class="summary-key">Description</span><span class="summary-val" style="white-space:pre-wrap;font-size:12px;line-height:1.7;color:var(--muted)">' + escHtml(idealDesc) + '</span></div>';
+    h += '<div class="summary-row"><span class="summary-key">Current Fit</span><span class="summary-val">';
+    h += '<span style="font-size:22px;font-weight:900;color:var(--navy)">' + idealFit + '%</span>';
+    h += '<div class="fit-pct-bar-track" style="width:200px;margin-top:6px"><div class="fit-pct-bar-fill" style="width:' + idealFit + '%"></div></div>';
+    h += '<p style="font-size:12px;color:var(--muted);margin-top:4px">' + (100 - idealFit) + '% gap to close</p>';
+    h += '</span></div></div>';
+  }
+
+  // Block 5 — Goals
+  if (goalSummaries.length > 0) {
+    h += '<div class="summary-block"><h3>2026 Goals</h3>';
+    goalSummaries.forEach(function(g, i) {
+      h += '<div class="goal-sum-card">';
+      h += '<div class="goal-sum-title"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--navy);color:#fff;border-radius:50%;font-size:11px;font-weight:700;flex-shrink:0">' + (i + 1) + '</span>' + escHtml(g.title) + '</div>';
+      if (g.desc) h += '<div class="goal-sum-desc">' + escHtml(g.desc) + '</div>';
+      if (g.dims && g.dims.length > 0) {
+        h += '<div style="display:flex;flex-wrap:wrap;gap:5px;">';
+        g.dims.forEach(function(dim) {
+          var s = DIM_PILL_STYLES[dim] || { bg: '#E2E8F0', text: '#475569', icon: '◆' };
+          h += '<span style="padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;background:' + s.bg + ';color:' + s.text + '">' + s.icon + ' ' + dim + '</span>';
+        });
+        h += '</div>';
+      }
+      h += '</div>';
+    });
+    h += '</div>';
+  }
+
+  // Block 6 — Narrative
+  h += '<div class="summary-block"><h3>Career Plan Narrative</h3>';
+  h += '<div class="narrative-card">' + escHtml(narrative) + '</div>';
+  h += '<div style="display:flex;gap:10px;margin-top:14px;">';
+  h += '<button class="btn-continue" style="font-size:12px;padding:8px 18px;" onclick="window.print()">⬡ Export as PDF</button>';
+  h += '<button onclick="showTab(\'setup\')" style="background:#fff;border:1px solid var(--border);color:var(--navy);font-weight:700;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:12px;">← Edit My Profile</button>';
+  h += '</div></div>';
+
+  document.getElementById('summary-content').innerHTML = h;
+}
+
+// ── UTILITIES ──────────────────────────────────────────
+function toggleCard(head) {
+  var body = head.nextElementSibling;
+  var chev = head.querySelector('.chevron');
+  var isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  if (chev) {
+    chev.classList.toggle('open', !isOpen);
+    chev.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0)';
+  }
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function clearAll() {
+  if (!confirm('This will clear all your evidence and notes. Are you sure?')) return;
+  try { localStorage.clear(); } catch(e) {}
+  location.reload();
+}
+
+// ── INIT ──────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  loadAll();
+});
+</script>
+</body>
+</html>
