@@ -208,7 +208,10 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .dim-r-developing { background: #FEF3C7; color: #92400E; }
 .dim-r-needs { background: #FEE2E2; color: #991B1B; }
 
-/* ── ASSESS EVIDENCE BUTTON ── */
+/* ── SECONDARY BUTTON ── */
+.btn-secondary { background: #fff; color: var(--navy); border: 1.5px solid var(--navy); padding: 10px 22px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; transition: all .15s; }
+.btn-secondary:hover { background: var(--light); }
+/* ── ASSESS / GO DEEPER BUTTON (kept for legacy, now aliased) ── */
 .btn-assess { background: var(--navy); color: #fff; padding: 10px 22px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 700; transition: opacity .15s; }
 .btn-assess:hover { opacity: .85; }
 .assess-result-panel { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 16px; }
@@ -434,9 +437,12 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
 
       <div class="setup-field">
         <label>Are you targeting promotion in 2026?</label>
-        <div class="promo-toggle">
-          <button id="promo-yes" class="promo-btn" onclick="setPromo(true)">👍 Yes, targeting promotion</button>
-          <button id="promo-no" class="promo-btn" onclick="setPromo(false)">💼 Not this year</button>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+          <div class="toggle-sw" id="promo-toggle-sw" onclick="setPromoToggle(this)" style="cursor:pointer">
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </div>
+          <span id="promo-toggle-label" style="font-size:13px;color:var(--muted);font-weight:600">Not targeting this year</span>
         </div>
       </div>
 
@@ -462,6 +468,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
       <span id="disp-tir" style="font-size:13px;color:var(--muted)">—</span>
     </div>
     <div>
+      <label>Level</label>
       <span id="disp-badge" class="level-badge">L?</span>
     </div>
   </div>
@@ -476,16 +483,12 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
     <div id="cur-roledesc-text" class="rdtext"></div>
   </div>
 
-  <div class="info-box">
-    <strong>How to use this section:</strong> Read each competency dimension. Add specific examples, projects, or outcomes as your evidence. Be concrete — "I did X which resulted in Y" beats "I think I'm good at Z." This is your prep for your next career conversation.
-  </div>
-
   <div id="current-cards"></div>
 
   <div id="assess-results"></div>
 
   <div class="page-footer-actions" style="margin-top:24px;justify-content:space-between;">
-    <button class="btn-assess" onclick="assessAllEvidence()">✦ Assess evidence</button>
+    <button class="btn-secondary" onclick="goDeepCurrentLevel()">✦ Go Deeper with AI</button>
     <button class="btn-continue" onclick="showTab('next')">Continue to Getting to Next Level →</button>
   </div>
 </div>
@@ -512,7 +515,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
     <p style="font-size:13px;color:var(--muted);margin-top:8px;">The framework doesn't define a transition beyond L10. At this level, you're shaping what the next level of design leadership at PayPal looks like.</p>
   </div>
 
-  <div class="page-footer-actions">
+  <div class="page-footer-actions" style="justify-content:space-between;">
+    <button class="btn-secondary" onclick="goDeepNextLevel()">✦ Go Deeper with AI</button>
     <button class="btn-continue" onclick="showTab('ideal')">Continue to My Ideal Role →</button>
   </div>
 </div>
@@ -523,7 +527,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
     <div><label>Designer</label><strong id="goals-disp-name" style="font-size:14px">—</strong></div>
     <div><label>Role</label><span id="goals-disp-role" style="font-size:13px;color:var(--muted)">—</span></div>
     <div id="goals-disp-tir-wrap" style="display:none"><label>Time in Role</label><span id="goals-disp-tir" style="font-size:13px;color:var(--muted)">—</span></div>
-    <div><span id="goals-disp-badge" class="level-badge">L?</span></div>
+    <div><label>Level</label><span id="goals-disp-badge" class="level-badge">L?</span></div>
   </div>
 
   <div id="goals-roledesc-wrap" style="display:none" class="role-desc-box">
@@ -539,8 +543,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
   <div id="goals-list"></div>
   <button onclick="addGoal()" style="background:#fff;border:1px solid var(--border);color:var(--blue);font-weight:700;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;margin-bottom:24px;">+ Add Goal</button>
 
-  <div style="margin-top:8px;padding-top:20px;border-top:1px solid var(--border);">
-    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Ready? Generate a summary of your career navigation plan based on everything you've filled in.</p>
+  <div style="margin-top:8px;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;">
+    <button class="btn-secondary" onclick="goDeeper()">✦ Go Deeper on Goals with AI</button>
     <button class="btn-summarize" onclick="summarizePlan()">✦ Summarize My Career Plan →</button>
   </div>
 </div>
@@ -552,7 +556,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
     <div><label>Designer</label><strong id="ideal-disp-name" style="font-size:14px">—</strong></div>
     <div><label>Role</label><span id="ideal-disp-role" style="font-size:13px;color:var(--muted)">—</span></div>
     <div id="ideal-disp-tir-wrap" style="display:none"><label>Time in Role</label><span id="ideal-disp-tir" style="font-size:13px;color:var(--muted)">—</span></div>
-    <div><span id="ideal-disp-badge" class="level-badge">L?</span></div>
+    <div><label>Level</label><span id="ideal-disp-badge" class="level-badge">L?</span></div>
   </div>
 
   <div class="section-header">
@@ -949,13 +953,20 @@ function updateReflection(field) {
 
 function setPromo(val, silent) {
   PROMO_TARGET = val;
-  var yesBtn = document.getElementById('promo-yes');
-  var noBtn = document.getElementById('promo-no');
+  var sw = document.getElementById('promo-toggle-sw');
+  var lbl = document.getElementById('promo-toggle-label');
   var tabNext = document.getElementById('tab-next');
-  if (yesBtn) yesBtn.classList.toggle('sel-yes', val === true);
-  if (noBtn) noBtn.classList.toggle('sel-no', val === false);
+  if (sw) sw.classList.toggle('on', val === true);
+  if (lbl) {
+    lbl.textContent = val ? 'Yes, targeting promotion in 2026' : 'Not targeting this year';
+    lbl.style.color = val ? 'var(--green)' : 'var(--muted)';
+  }
   if (tabNext) tabNext.style.display = val ? 'block' : 'none';
   if (!silent) saveProfile();
+}
+
+function setPromoToggle(el) {
+  setPromo(!el.classList.contains('on'));
 }
 
 function rateEvidence(text) {
@@ -1095,8 +1106,11 @@ function renderCurrentLevel() {
   } else {
     rdWrap.style.display = 'none';
   }
-  document.getElementById('cur-level-title').textContent = data.title;
-  document.getElementById('cur-level-sub').textContent = data.years + ' experience · For each dimension, add your evidence below.';
+  var titleParts = data.title.split('—');
+  var levelNum = titleParts[0].trim();
+  var roleName = titleParts.length > 1 ? titleParts[1].trim().replace(/\bXD\s+/gi, '') : '';
+  document.getElementById('cur-level-title').textContent = 'Currently ' + levelNum + (roleName ? ' — ' + roleName : '');
+  document.getElementById('cur-level-sub').textContent = 'Add specific examples, projects, or outcomes with dates as evidence: "In Q2, I did X which resulted in Y."';
 
   var dims = Object.keys(data.dims);
 
@@ -1534,125 +1548,8 @@ function renderIdealRole() {
 
 // ── SUMMARIZE → CLAUDE.AI ──────────────────────────────────────────
 function summarizePlan() {
-  var profile = load('profile', {});
-  var name = profile.name || 'Designer';
-  var role = profile.role || 'Not specified';
-  var roledesc = profile.roledesc || '';
-  var satisfaction = parseInt(profile.satisfaction || 5);
-  var tir = getTimeInRoleText() || 'Not specified';
-  var curData = getLevelData();
-  var levelTitle = curData.title;
-
-  // Collect current level evidence
-  var dims = Object.keys(curData.dims);
-  var evidenceLines = [];
-  dims.forEach(function(dim) {
-    var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g,'_');
-    var ev = (loadEvidence(evKey) || '').trim();
-    evidenceLines.push('  [' + dim + ']\n  Criteria: ' + curData.dims[dim].replace(/\n/g,' ') + '\n  My Evidence: ' + (ev || '(none yet)'));
-  });
-
-  // Collect next level behaviors
-  var tKey = getTransitionKey();
-  var nextData = null;
-  var behLines = [];
-  var checkedBeh = 0, totalBeh = 0;
-  if (tKey && IC_TRANSITIONS[tKey]) {
-    var trans = IC_TRANSITIONS[tKey];
-    var nextLevel = getNextLevel();
-    nextData = TRACK === 'ic' ? IC_LEVELS[nextLevel] : null;
-    Object.keys(trans.dims).forEach(function(dim) {
-      trans.dims[dim].forEach(function(beh, i) {
-        totalBeh++;
-        var ck = 'chk_' + TRACK + '_' + tKey + '_' + dim.replace(/\s+/g,'_') + '_' + i;
-        var checked = loadCheck(ck);
-        if (checked) checkedBeh++;
-        behLines.push('  [' + (checked ? 'X' : ' ') + '] ' + dim + ': ' + beh);
-      });
-    });
-  }
-
-  // Collect goals
-  var goalLines = [];
-  goals.filter(function(g) { return g.title && g.title.trim(); }).forEach(function(g, i) {
-    goalLines.push('  Goal ' + (i+1) + ': ' + g.title + (g.desc ? '\n  Detail: ' + g.desc : ''));
-  });
-
-  // Ideal role
-  var ir = load('idealrole', {});
-  var idealDesc = ir.desc || '';
-  var idealFit = parseInt(ir.fit !== undefined ? ir.fit : 50);
-
-  // Build prompt
-  var prompt = '# PayPal XD Career Navigation Evaluation\n\n';
-  prompt += 'Please evaluate the following career profile and provide structured feedback across four areas.\n\n';
-  prompt += '---\n\n';
-  prompt += '## DESIGNER PROFILE\n';
-  prompt += 'Name: ' + name + '\n';
-  prompt += 'Role: ' + role + '\n';
-  prompt += 'Time in Role: ' + tir + '\n';
-  prompt += 'Current Level: ' + levelTitle + '\n';
-  prompt += 'Role Satisfaction: ' + satisfaction + '/10\n';
-  if (roledesc) prompt += 'Role Description: ' + roledesc + '\n';
-  if (idealDesc) prompt += 'Ideal Role: ' + idealDesc + '\n  Current Fit: ' + idealFit + '%\n';
-  prompt += '\n---\n\n';
-
-  prompt += '## PART 1: CURRENT LEVEL EVIDENCE\n';
-  prompt += 'Evaluate the evidence provided for each competency dimension at ' + levelTitle + '.\n';
-  prompt += 'For each dimension: assess whether evidence is strong, developing, or needs work.\n';
-  prompt += 'Then give an overall completeness rating.\n\n';
-  prompt += 'Context: PayPal Design Principles are: Clarity, Empathy, Integrity, Craftsmanship, and Innovation.\n';
-  prompt += 'Team priorities (Steve, Mark, Rachel): product quality and craft, cross-functional influence, systems thinking, AI-forward design.\n\n';
-  evidenceLines.forEach(function(l) { prompt += l + '\n\n'; });
-  prompt += '\n---\n\n';
-
-  prompt += '## PART 2: NEXT LEVEL READINESS\n';
-  if (nextData) {
-    prompt += 'Target Level: ' + nextData.title + '\n';
-    prompt += 'Readiness Check: ' + checkedBeh + ' of ' + totalBeh + ' transition behaviors demonstrated\n\n';
-    prompt += 'Checked behaviors (X = demonstrated):\n';
-    behLines.forEach(function(l) { prompt += l + '\n'; });
-    prompt += '\nUsing the same PayPal principles and team goals above:\n';
-    prompt += '- Rate readiness: not ready / developing / ready / strong\n';
-    prompt += '- Identify the 2-3 highest-leverage behaviors to work on\n';
-    prompt += '- Flag any gaps between evidence quality and behavior check\n';
-  } else {
-    prompt += 'No transition data available for this track/level.\n';
-  }
-  prompt += '\n---\n\n';
-
-  prompt += '## PART 3: 2026 GOALS ANALYSIS\n';
-  if (goalLines.length > 0) {
-    prompt += 'For each goal:\n';
-    prompt += '- Evaluate against SMART criteria (Specific, Measurable, Achievable, Relevant, Time-bound)\n';
-    prompt += '- Assess alignment with PayPal team priorities (see above)\n';
-    prompt += '- Rate: Strong / On Track / Needs Refinement\n';
-    prompt += '- Flag any goals that seem misaligned with growth trajectory\n';
-    prompt += '- Note what each goal supports (current level evidence, next level readiness, or ideal role)\n\n';
-    goalLines.forEach(function(l) { prompt += l + '\n\n'; });
-  } else {
-    prompt += 'No goals entered yet.\n';
-  }
-  prompt += '\n---\n\n';
-
-  prompt += '## PART 4: CAREER NARRATIVE\n';
-  prompt += 'Synthesize all of the above into:\n';
-  prompt += '1. A concise career narrative paragraph (3-5 sentences) this designer could share with their manager\n';
-  prompt += '2. Top 3 recommended focus areas for the next 6 months\n';
-  prompt += '3. One question the designer should be asking their manager right now\n';
-  prompt += '\n---\n\n';
-  prompt += 'Format your response with clear headers for each Part. Be direct and specific.';
-
-  // Copy to clipboard and open Claude.ai
-  try {
-    navigator.clipboard.writeText(prompt).then(function() {
-      showClaudeModal(true);
-    }).catch(function() {
-      showClaudeModal(false, prompt);
-    });
-  } catch(e) {
-    showClaudeModal(false, prompt);
-  }
+  renderSummary();
+  showTab('summary');
 }
 
 function showClaudeModal(copied, fallbackPrompt) {
@@ -2147,7 +2044,94 @@ function assessAllEvidence() {
   document.getElementById('assess-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// ── GO DEEPER ──────────────────────────────────────────
+// ── GO DEEPER — CURRENT LEVEL ──────────────────────────
+function goDeepCurrentLevel() {
+  var profile = load('profile', {});
+  var name = profile.name || 'Designer';
+  var role = profile.role || 'Not specified';
+  var curData = getLevelData();
+  var titleParts = curData.title.split('—');
+  var levelNum = titleParts[0].trim();
+  var roleName = titleParts.length > 1 ? titleParts[1].trim().replace(/\bXD\s+/gi, '') : '';
+  var levelLabel = 'Currently ' + levelNum + (roleName ? ' — ' + roleName : '');
+
+  var dims = Object.keys(curData.dims);
+  var evidenceLines = dims.map(function(dim) {
+    var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g,'_');
+    var ev = (loadEvidence(evKey) || '').trim();
+    var rating = rateEvidence(ev);
+    return '[' + dim + ']\nCriteria: ' + curData.dims[dim].replace(/\n/g,' ') + '\nMy Evidence: ' + (ev || '(none yet)') + '\nEvidence quality: ' + rating;
+  }).join('\n\n');
+
+  var prompt = '# PayPal XD Career Assessment — Current Level Evidence\n\n';
+  prompt += 'Designer: ' + name + '\nRole: ' + role + '\nLevel: ' + levelLabel + '\n\n';
+  prompt += 'Please evaluate my evidence against the PayPal XD Career Framework criteria.\n';
+  prompt += 'For each dimension: rate the evidence (strong / developing / needs work), explain why, and suggest one specific action to strengthen it.\n';
+  prompt += 'Close with an overall readiness summary and the top 2 dimensions to focus on.\n\n';
+  prompt += 'PayPal Design Principles: Clarity, Empathy, Integrity, Craftsmanship, Innovation.\n';
+  prompt += 'Team priorities: product quality & craft, cross-functional influence, systems thinking, AI-forward design.\n\n---\n\n';
+  prompt += evidenceLines;
+
+  try {
+    navigator.clipboard.writeText(prompt).then(function() {
+      showClaudeModal(true);
+    }).catch(function() { showClaudeModal(false, prompt); });
+  } catch(e) { showClaudeModal(false, prompt); }
+}
+
+// ── GO DEEPER — NEXT LEVEL ──────────────────────────────
+function goDeepNextLevel() {
+  var profile = load('profile', {});
+  var name = profile.name || 'Designer';
+  var role = profile.role || 'Not specified';
+  var curData = getLevelData();
+  var tKey = getTransitionKey();
+  var nextLevel = getNextLevel();
+  var nextData = nextLevel && IC_LEVELS[nextLevel] ? IC_LEVELS[nextLevel] : null;
+
+  if (!tKey || !IC_TRANSITIONS[tKey]) {
+    alert('No transition data available for this level or track.');
+    return;
+  }
+
+  var trans = IC_TRANSITIONS[tKey];
+  var behLines = [];
+  var checkedBeh = 0, totalBeh = 0;
+  Object.keys(trans.dims).forEach(function(dim) {
+    trans.dims[dim].forEach(function(beh, i) {
+      totalBeh++;
+      var ck = 'chk_' + TRACK + '_' + tKey + '_' + dim.replace(/\s+/g,'_') + '_' + i;
+      var checked = loadCheck(ck);
+      if (checked) checkedBeh++;
+      var evKey = 'beh_' + TRACK + '_' + tKey + '_' + dim.replace(/\s+/g,'_') + '_' + i;
+      var ev = (loadEvidence(evKey) || '').trim();
+      behLines.push('[' + (checked ? 'X' : ' ') + '] ' + dim + ': ' + beh + (ev ? '\n  Evidence: ' + ev : ''));
+    });
+  });
+
+  var prompt = '# PayPal XD Career Assessment — Promotion Readiness\n\n';
+  prompt += 'Designer: ' + name + '\nRole: ' + role + '\n';
+  prompt += 'Current Level: ' + curData.title + '\n';
+  if (nextData) prompt += 'Target Level: ' + nextData.title + '\n';
+  prompt += 'Readiness: ' + checkedBeh + ' of ' + totalBeh + ' transition behaviors demonstrated (' + Math.round(checkedBeh/totalBeh*100) + '%)\n\n';
+  prompt += 'Please evaluate my promotion readiness:\n';
+  prompt += '- Rate overall readiness: not ready / developing / ready / strong\n';
+  prompt += '- For each behavior below, assess how compelling the evidence is\n';
+  prompt += '- Identify the 2-3 highest-leverage gaps to close\n';
+  prompt += '- Suggest one concrete action per gap\n\n';
+  prompt += 'PayPal Design Principles: Clarity, Empathy, Integrity, Craftsmanship, Innovation.\n';
+  prompt += 'Team priorities: product quality & craft, cross-functional influence, systems thinking, AI-forward design.\n\n---\n\n';
+  prompt += 'Transition Behaviors (X = demonstrated):\n\n';
+  prompt += behLines.join('\n\n');
+
+  try {
+    navigator.clipboard.writeText(prompt).then(function() {
+      showClaudeModal(true);
+    }).catch(function() { showClaudeModal(false, prompt); });
+  } catch(e) { showClaudeModal(false, prompt); }
+}
+
+// ── GO DEEPER — GOALS ──────────────────────────────────
 function goDeeper() {
   var profile = load('profile', {});
   var name = profile.name || 'Designer';
