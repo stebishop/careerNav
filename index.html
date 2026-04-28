@@ -208,6 +208,27 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .dim-r-developing { background: #FEF3C7; color: #92400E; }
 .dim-r-needs { background: #FEE2E2; color: #991B1B; }
 
+/* ── ASSESS EVIDENCE BUTTON ── */
+.btn-assess { background: var(--navy); color: #fff; padding: 10px 22px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 700; transition: opacity .15s; }
+.btn-assess:hover { opacity: .85; }
+.assess-result-panel { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 16px; }
+.assess-dim-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.assess-dim-row:last-child { border-bottom: none; }
+.assess-dim-label { font-size: 12px; font-weight: 700; color: var(--text); flex: 1; }
+/* ── GO DEEPER BUTTON ── */
+.btn-go-deeper { background: linear-gradient(135deg, #4F46E5, #7C3AED); color: #fff; padding: 10px 22px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 700; transition: opacity .15s; }
+.btn-go-deeper:hover { opacity: .85; }
+/* ── NEXT LEVEL CARDS (differentiated background) ── */
+#page-next .card { background: #F5F3FF; border-color: #DDD6FE; }
+#page-next .card-head:hover { background: #EDE9FE; }
+#page-next .card-body { background: #F5F3FF; }
+/* ── SETUP PROFILE PREVIEW ── */
+.setup-preview { background: var(--light); border: 1px solid #c8dff5; border-radius: 10px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.setup-preview-info { flex: 1; min-width: 180px; }
+.setup-preview-info .sp-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 2px; }
+.setup-preview-info .sp-name { font-size: 14px; font-weight: 700; color: var(--navy); }
+.setup-preview-info .sp-role { font-size: 12px; color: var(--muted); }
+
 /* ── PRINT ── */
 @media print {
   .header, .tabnav, .btn, .profile-bar select, .header-right { display: none !important; }
@@ -315,25 +336,61 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
       <h2>Career Navigation</h2>
       <p class="subtitle">This tool helps you understand where you are, what's expected, what you need to grow, and how your 2026 goals connect to the PayPal XD Career Framework.</p>
 
+      <!-- Saved profile preview -->
+      <div id="setup-profile-preview" class="setup-preview" style="display:none">
+        <div class="setup-preview-info">
+          <div class="sp-label">Saved Profile</div>
+          <div class="sp-name" id="preview-name">—</div>
+          <div class="sp-role" id="preview-role">—</div>
+        </div>
+        <span id="preview-badge" class="level-badge" style="font-size:12px">L?</span>
+      </div>
+
       <div class="setup-field">
         <label>Your Name</label>
-        <input type="text" id="setup-name" placeholder="e.g. Alex Kim" oninput="saveProfile()">
+        <input type="text" id="setup-name" placeholder="e.g. Alex Kim" oninput="saveProfile();updateSetupPreview()">
       </div>
 
       <div class="setup-field">
-        <label>Current Role &amp; Team</label>
-        <input type="text" id="setup-role" placeholder="e.g. Senior XD Designer, Checkout" oninput="saveProfile()">
+        <label>Role Title</label>
+        <input type="text" id="setup-role" placeholder="e.g. Senior XD Designer, Checkout" oninput="saveProfile();updateSetupPreview()">
       </div>
 
       <div class="setup-field">
-        <label>Describe the Role You Currently Occupy</label>
-        <textarea id="setup-roledesc" placeholder="e.g. I am a Senior XD Designer embedded in the Checkout team, where I own the end-to-end design for the payment method selection and confirmation flows. Day-to-day I work directly with a PM and engineering lead to scope and ship features, run weekly design reviews, and mentor one junior designer. I make decisions about UX patterns, edge case handling, and when to escalate design risks to the design manager." oninput="saveProfile()"></textarea>
+        <label>Track</label>
+        <div class="track-toggle">
+          <button id="track-ic" class="track-btn active" onclick="setTrack('ic')">Individual Contributor (IC)</button>
+          <button id="track-mgr" class="track-btn" onclick="setTrack('mgr')">Manager</button>
+        </div>
+      </div>
+
+      <div class="setup-field">
+        <label>Select Your Current Level</label>
+        <div id="level-grid-ic" class="level-grid">
+          <button class="level-btn" data-lvl="5" onclick="selectLevel('5')"><span class="lnum">L5</span><span class="ltitle">XD Designer</span></button>
+          <button class="level-btn" data-lvl="6" onclick="selectLevel('6')"><span class="lnum">L6</span><span class="ltitle">Senior XD Designer</span></button>
+          <button class="level-btn" data-lvl="7" onclick="selectLevel('7')"><span class="lnum">L7</span><span class="ltitle">Staff XD Designer</span></button>
+          <button class="level-btn" data-lvl="8" onclick="selectLevel('8')"><span class="lnum">L8</span><span class="ltitle">Senior Staff</span></button>
+          <button class="level-btn" data-lvl="9" onclick="selectLevel('9')"><span class="lnum">L9</span><span class="ltitle">Principal</span></button>
+          <button class="level-btn" data-lvl="10" onclick="selectLevel('10')"><span class="lnum">L10</span><span class="ltitle">Distinguished</span></button>
+        </div>
+        <div id="level-grid-mgr" class="level-grid" style="display:none">
+          <button class="level-btn" data-lvl="m7" onclick="selectLevel('m7')"><span class="lnum">L7</span><span class="ltitle">Design Manager</span></button>
+          <button class="level-btn" data-lvl="m8" onclick="selectLevel('m8')"><span class="lnum">L8</span><span class="ltitle">Senior Mgr</span></button>
+          <button class="level-btn" data-lvl="m9" onclick="selectLevel('m9')"><span class="lnum">L9</span><span class="ltitle">Director</span></button>
+          <button class="level-btn" data-lvl="m10" onclick="selectLevel('m10')"><span class="lnum">L10</span><span class="ltitle">Sr. Director</span></button>
+        </div>
       </div>
 
       <div class="setup-field">
         <label>Time in Role — When did you start this role?</label>
         <input type="date" id="setup-rolestart" oninput="saveProfile(); updateTimeInRole()" style="width:auto;max-width:220px;">
         <div class="time-in-role-display hidden" id="time-in-role-badge">⏱ —</div>
+      </div>
+
+      <div class="setup-field">
+        <label>Describe the Role You Currently Occupy</label>
+        <textarea id="setup-roledesc" placeholder="e.g. I am a Senior XD Designer embedded in the Checkout team, where I own the end-to-end design for the payment method selection and confirmation flows. Day-to-day I work directly with a PM and engineering lead to scope and ship features, run weekly design reviews, and mentor one junior designer. I make decisions about UX patterns, edge case handling, and when to escalate design risks to the design manager." oninput="saveProfile()"></textarea>
       </div>
 
       <div class="setup-field">
@@ -383,32 +440,6 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
         </div>
       </div>
 
-      <div class="setup-field">
-        <label>Track</label>
-        <div class="track-toggle">
-          <button id="track-ic" class="track-btn active" onclick="setTrack('ic')">Individual Contributor (IC)</button>
-          <button id="track-mgr" class="track-btn" onclick="setTrack('mgr')">Manager</button>
-        </div>
-      </div>
-
-      <div class="setup-field">
-        <label>Select Your Current Level</label>
-        <div id="level-grid-ic" class="level-grid">
-          <button class="level-btn" data-lvl="5" onclick="selectLevel('5')"><span class="lnum">L5</span><span class="ltitle">XD Designer</span></button>
-          <button class="level-btn" data-lvl="6" onclick="selectLevel('6')"><span class="lnum">L6</span><span class="ltitle">Senior XD Designer</span></button>
-          <button class="level-btn" data-lvl="7" onclick="selectLevel('7')"><span class="lnum">L7</span><span class="ltitle">Staff XD Designer</span></button>
-          <button class="level-btn" data-lvl="8" onclick="selectLevel('8')"><span class="lnum">L8</span><span class="ltitle">Senior Staff</span></button>
-          <button class="level-btn" data-lvl="9" onclick="selectLevel('9')"><span class="lnum">L9</span><span class="ltitle">Principal</span></button>
-          <button class="level-btn" data-lvl="10" onclick="selectLevel('10')"><span class="lnum">L10</span><span class="ltitle">Distinguished</span></button>
-        </div>
-        <div id="level-grid-mgr" class="level-grid" style="display:none">
-          <button class="level-btn" data-lvl="m7" onclick="selectLevel('m7')"><span class="lnum">L7</span><span class="ltitle">Design Manager</span></button>
-          <button class="level-btn" data-lvl="m8" onclick="selectLevel('m8')"><span class="lnum">L8</span><span class="ltitle">Senior Mgr</span></button>
-          <button class="level-btn" data-lvl="m9" onclick="selectLevel('m9')"><span class="lnum">L9</span><span class="ltitle">Director</span></button>
-          <button class="level-btn" data-lvl="m10" onclick="selectLevel('m10')"><span class="lnum">L10</span><span class="ltitle">Sr. Director</span></button>
-        </div>
-      </div>
-
       <button class="btn-primary" onclick="goToAssessment()">Continue →</button>
       <p class="autosave-note">Your responses auto-save in this browser.</p>
     </div>
@@ -430,7 +461,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
       <label>Time in Role</label>
       <span id="disp-tir" style="font-size:13px;color:var(--muted)">—</span>
     </div>
-    <div style="margin-left:auto">
+    <div>
       <span id="disp-badge" class="level-badge">L?</span>
     </div>
   </div>
@@ -451,7 +482,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
 
   <div id="current-cards"></div>
 
-  <div class="page-footer-actions" style="margin-top:24px">
+  <div id="assess-results"></div>
+
+  <div class="page-footer-actions" style="margin-top:24px;justify-content:space-between;">
+    <button class="btn-assess" onclick="assessAllEvidence()">✦ Assess evidence</button>
     <button class="btn-continue" onclick="showTab('next')">Continue to Getting to Next Level →</button>
   </div>
 </div>
@@ -468,16 +502,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
 
   <div class="section-header">
     <h2 id="next-level-title">Getting to the Next Level</h2>
-    <p>[Optional] Gather evidence and evaluate readiness on moving to the next level.</p>
-  </div>
-
-  <div id="next-progress-wrap" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:20px;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-      <span style="font-size:13px;font-weight:700;color:var(--navy)">Readiness Check</span>
-      <span id="progress-count" style="font-size:13px;font-weight:700;color:var(--blue)">0 / 0 checked</span>
-    </div>
-    <div class="progress-bar-wrap"><div id="progress-bar" class="progress-bar" style="width:0%"></div></div>
-    <p style="font-size:11px;color:var(--muted);margin-top:5px;">Check behaviors you can demonstrate with a real example. Consistent, not occasional, is the bar.</p>
+    <p>[Optional] Add examples for each behavior that distinguishes the next level. Your progress will be reflected in the Career Plan summary.</p>
   </div>
 
   <div id="transition-cards"></div>
@@ -498,7 +523,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
     <div><label>Designer</label><strong id="goals-disp-name" style="font-size:14px">—</strong></div>
     <div><label>Role</label><span id="goals-disp-role" style="font-size:13px;color:var(--muted)">—</span></div>
     <div id="goals-disp-tir-wrap" style="display:none"><label>Time in Role</label><span id="goals-disp-tir" style="font-size:13px;color:var(--muted)">—</span></div>
-    <div style="margin-left:auto"><span id="goals-disp-badge" class="level-badge">L?</span></div>
+    <div><span id="goals-disp-badge" class="level-badge">L?</span></div>
   </div>
 
   <div id="goals-roledesc-wrap" style="display:none" class="role-desc-box">
@@ -527,7 +552,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
     <div><label>Designer</label><strong id="ideal-disp-name" style="font-size:14px">—</strong></div>
     <div><label>Role</label><span id="ideal-disp-role" style="font-size:13px;color:var(--muted)">—</span></div>
     <div id="ideal-disp-tir-wrap" style="display:none"><label>Time in Role</label><span id="ideal-disp-tir" style="font-size:13px;color:var(--muted)">—</span></div>
-    <div style="margin-left:auto"><span id="ideal-disp-badge" class="level-badge">L?</span></div>
+    <div><span id="ideal-disp-badge" class="level-badge">L?</span></div>
   </div>
 
   <div class="section-header">
@@ -540,15 +565,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
       <label>Describe your ideal role</label>
       <textarea id="ideal-role-desc" class="evidence-area" style="min-height:140px;" placeholder="e.g. My ideal role is one where I own the design strategy for a full product pillar — not just features, but the end-to-end customer experience and the vision behind it. I'd work closely with a senior PM and engineering director to shape what we build, serve as the design voice in roadmap conversations, mentor 2–3 designers, and be recognized for the quality of my decisions as much as the quality of my pixels." oninput="saveIdealRole()"></textarea>
     </div>
-
-    <div class="fit-percent-section">
-      <label>How much of your current role fits this ideal?</label>
-      <div class="fit-range-wrap">
-        <input type="range" id="ideal-fit-pct" min="0" max="100" value="50" oninput="updateFitPct(); saveIdealRole()">
-        <span class="fit-pct-display" id="fit-pct-num">50%</span>
-      </div>
-
-    </div>
+    <!-- Hidden fit slider — kept for data compat, not shown -->
+    <input type="range" id="ideal-fit-pct" min="0" max="100" value="50" oninput="saveIdealRole()" style="display:none">
   </div>
 
   <div class="page-footer-actions">
@@ -861,6 +879,7 @@ function loadAll() {
     });
     // Load promotion
     if (profile.promo !== undefined) setPromo(profile.promo, true);
+    updateSetupPreview();
   }
   goals = load('goals', []);
   if (goals.length === 0) {
@@ -1027,6 +1046,7 @@ function selectLevel(lvl, silent) {
   document.querySelectorAll('.level-btn').forEach(function(b){ b.classList.remove('selected'); });
   var btn = document.querySelector('.level-btn[data-lvl="' + lvl + '"]');
   if (btn) btn.classList.add('selected');
+  updateSetupPreview();
   if (!silent) saveProfile();
 }
 
@@ -1080,55 +1100,25 @@ function renderCurrentLevel() {
 
   var dims = Object.keys(data.dims);
 
-  // Evidence progress bar
-  var ratings = {};
-  dims.forEach(function(dim) {
-    var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g,'_');
-    ratings[dim] = rateEvidence(loadEvidence(evKey));
-  });
-  var strongCount = dims.filter(function(d){ return ratings[d]==='strong'; }).length;
-  var devCount = dims.filter(function(d){ return ratings[d]==='developing'; }).length;
-  var pct = Math.round((strongCount + devCount*0.5) / dims.length * 100);
-  var progressHtml = '<div class="ev-progress-wrap">';
-  progressHtml += '<div class="ev-progress-top">';
-  progressHtml += '<span style="font-size:13px;font-weight:700;color:var(--navy)">Evidence Coverage</span>';
-  progressHtml += '<span style="font-size:13px;font-weight:700;color:var(--blue)">' + strongCount + ' strong · ' + devCount + ' developing · ' + (dims.length - strongCount - devCount) + ' empty</span>';
-  progressHtml += '</div>';
-  progressHtml += '<div class="progress-bar-wrap"><div class="progress-bar" style="width:' + pct + '%"></div></div>';
-  progressHtml += '<div class="ev-progress-dots">';
-  dims.forEach(function(dim) {
-    var ic = DIM_ICONS[dim] || { icon: '◆', color: '#EDE9FE', text: '#4C1D95' };
-    var r = ratings[dim];
-    var bg = r==='strong' ? '#D1FAE5' : r==='developing' ? '#FEF3C7' : '#F1F5F9';
-    var tc = r==='strong' ? '#065F46' : r==='developing' ? '#92400E' : '#94A3B8';
-    progressHtml += '<span style="padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;background:' + bg + ';color:' + tc + '">' + ic.icon + ' ' + dim + '</span>';
-  });
-  progressHtml += '</div></div>';
-
-  var html = progressHtml;
+  var html = '';
   dims.forEach(function(dim) {
     var icon = DIM_ICONS[dim] || { icon: '◆', color: '#EDE9FE', text: '#4C1D95' };
     var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g,'_');
     var evVal = loadEvidence(evKey);
-    var rating = ratings[dim];
-    var chipClass = rating==='strong' ? 'ev-quality-strong' : rating==='developing' ? 'ev-quality-developing' : 'ev-quality-needs';
-    var chipLabel = rating==='strong' ? '✓ Strong' : rating==='developing' ? '↗ Developing' : '○ Add evidence';
-    var hintHtml = (rating !== 'strong' && EV_HINTS[dim])
-      ? '<div class="ev-hint">💡 ' + EV_HINTS[dim] + '</div>' : '';
     html += '<div class="card">';
     html += '<div class="card-head" onclick="toggleCard(this)">';
     html += '<div class="dim-icon" style="background:' + icon.color + ';color:' + icon.text + '">' + icon.icon + '</div>';
-    html += '<h3>' + dim + '<span class="ev-quality-chip ' + chipClass + '">' + chipLabel + '</span></h3>';
+    html += '<h3 id="head-' + evKey + '">' + dim + '</h3>';
     html += '<span class="chevron open">▼</span>';
     html += '</div>';
     html += '<div class="card-body open">';
     html += '<div class="criteria-box">' + data.dims[dim].replace(/\n/g, '<br>') + '</div>';
     html += '<div class="evidence-label">My Evidence & Examples</div>';
-    html += '<textarea class="evidence-area" id="evarea-' + evKey + '" placeholder="Describe specific projects, decisions, or outcomes. Be concrete: \'I led X which resulted in Y\'..." oninput="saveEvidence(\'' + evKey + '\',this.value);refreshEvidenceChip(\'' + evKey + '\',\'' + dim.replace(/'/g,"\\'") + '\',this.value)">' + evVal + '</textarea>';
-    html += hintHtml;
+    html += '<textarea class="evidence-area" id="evarea-' + evKey + '" placeholder="Describe specific projects, decisions, or outcomes. Be concrete: \'I led X which resulted in Y\'..." oninput="saveEvidence(\'' + evKey + '\',this.value)">' + evVal + '</textarea>';
     html += '</div></div>';
   });
   document.getElementById('current-cards').innerHTML = html;
+  document.getElementById('assess-results').innerHTML = '';
 }
 
 function refreshEvidenceChip(evKey, dim, val) {
@@ -1188,7 +1178,6 @@ function renderNextLevel() {
     tgtBadge.textContent = '—';
     document.getElementById('transition-cards').innerHTML = '';
     document.getElementById('no-transition').style.display = 'block';
-    document.getElementById('next-progress-wrap').style.display = 'none';
     document.getElementById('next-level-title').textContent = 'You\'re at the Top';
     return;
   }
@@ -1197,7 +1186,6 @@ function renderNextLevel() {
   tgtBadge.textContent = nextData ? nextData.title.split('—')[0].trim() : ('L' + next);
   document.getElementById('next-level-title').textContent = 'Getting to ' + (nextData ? nextData.title : 'Next Level');
   document.getElementById('no-transition').style.display = 'none';
-  document.getElementById('next-progress-wrap').style.display = 'block';
 
   var tKey = getTransitionKey();
   var trans = IC_TRANSITIONS[tKey];
@@ -1226,16 +1214,14 @@ function renderNextLevel() {
     behaviors.forEach(function(beh, i) {
       var chkKey = 'chk_' + TRACK + '_' + tKey + '_' + dim.replace(/\s+/g,'_') + '_' + i;
       var evKey = 'ev_next_' + TRACK + '_' + tKey + '_' + dim.replace(/\s+/g,'_') + '_' + i;
-      var isChecked = loadCheck(chkKey);
       var evVal = loadEvidence(evKey);
 
       html += '<div class="behavior-item">';
-      html += '<div class="behavior-check ' + (isChecked ? 'checked' : '') + '" onclick="toggleBehavior(\'' + chkKey + '\',this)" title="Check when you have a strong example"></div>';
       html += '<div class="behavior-text">';
       html += '<p>' + beh + '</p>';
       html += '<div class="behavior-evidence">';
       html += '<div class="evidence-label" style="margin-top:6px">My Example</div>';
-      html += '<textarea class="evidence-area" style="min-height:60px" placeholder="Specific project or situation where you demonstrated this..." oninput="saveEvidence(\'' + evKey + '\',this.value)">' + evVal + '</textarea>';
+      html += '<textarea class="evidence-area" style="min-height:60px" placeholder="Specific project or situation where you demonstrated this..." oninput="saveEvidence(\'' + evKey + '\',this.value);autoCheckBehavior(\'' + chkKey + '\',this.value)">' + evVal + '</textarea>';
       html += '</div></div></div>';
     });
 
@@ -1243,7 +1229,6 @@ function renderNextLevel() {
   });
 
   document.getElementById('transition-cards').innerHTML = html;
-  updateProgress(tKey);
 }
 
 function toggleBehavior(key, el) {
@@ -1476,16 +1461,7 @@ function renderGoals() {
       html += '</span>';
     });
     html += '</div>';
-    // Org ladder
-    var selOrg = escHtml(g.org || '');
-    html += '<div class="org-ladder-row">';
-    html += '<label>Org ladder:</label>';
-    html += '<select onchange="updateGoal(' + g.id + ',\'org\',this.value);refreshSmartRow(' + g.id + ')">';
-    ORG_GOALS.forEach(function(o) {
-      html += '<option value="' + o.id + '"' + (g.org === o.id ? ' selected' : '') + '>' + escHtml(o.label) + '</option>';
-    });
-    html += '</select>';
-    html += '</div>';
+    // Org ladder — hidden from goals page, still stored on goal object for SMART R detection
     html += '</div>';
     html += '<div style="flex-shrink:0;"><button onclick="removeGoal(' + g.id + ')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;padding:4px 6px;line-height:1" title="Remove goal">×</button></div>';
     html += '</div>';
@@ -1807,10 +1783,6 @@ function renderSummary() {
 
   // Block 1 — Current State
   h += '<div class="summary-block"><h3>Current State</h3>';
-  h += '<div class="summary-row"><span class="summary-key">Name</span><span class="summary-val">' + escHtml(name) + '</span></div>';
-  h += '<div class="summary-row"><span class="summary-key">Level</span><span class="summary-val"><span class="level-badge" style="font-size:12px;padding:3px 10px">' + escHtml(levelTitle.split('—')[0].trim()) + '</span>&nbsp; ' + escHtml((levelTitle.split('—')[1] || '').trim()) + '</span></div>';
-  h += '<div class="summary-row"><span class="summary-key">Role</span><span class="summary-val">' + escHtml(role) + '</span></div>';
-  h += '<div class="summary-row"><span class="summary-key">Time in Role</span><span class="summary-val">' + escHtml(tir) + '</span></div>';
   var refS = parseInt(profile.ref_strengths || satisfaction);
   var refAl = parseInt(profile.ref_align || satisfaction);
   var refLe = parseInt(profile.ref_learning || satisfaction);
@@ -1901,9 +1873,10 @@ function renderSummary() {
   // Block 6 — Narrative
   h += '<div class="summary-block"><h3>Career Plan Narrative</h3>';
   h += '<div class="narrative-card">' + escHtml(narrative) + '</div>';
-  h += '<div style="display:flex;gap:10px;margin-top:14px;">';
+  h += '<div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">';
   h += '<button class="btn-continue" style="font-size:12px;padding:8px 18px;" onclick="window.print()">⬡ Export as PDF</button>';
   h += '<button onclick="showTab(\'setup\')" style="background:#fff;border:1px solid var(--border);color:var(--navy);font-weight:700;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:12px;">← Edit My Profile</button>';
+  h += '<button class="btn-go-deeper" onclick="goDeeper()" style="font-size:12px;padding:8px 18px;">✦ Go deeper with AI →</button>';
   h += '</div></div>';
 
   // Block 7 — Quarterly Roadmap
@@ -2075,6 +2048,176 @@ function clearAll() {
   if (!confirm('This will clear all your evidence and notes. Are you sure?')) return;
   try { localStorage.clear(); } catch(e) {}
   location.reload();
+}
+
+// ── SETUP PROFILE PREVIEW ──────────────────────────────────────────
+function updateSetupPreview() {
+  var name = (document.getElementById('setup-name') || {}).value || '';
+  var role = (document.getElementById('setup-role') || {}).value || '';
+  var preview = document.getElementById('setup-profile-preview');
+  if (!preview) return;
+  if (name || role) {
+    preview.style.display = 'flex';
+    document.getElementById('preview-name').textContent = name || '—';
+    document.getElementById('preview-role').textContent = role || '—';
+    var data = getLevelData();
+    document.getElementById('preview-badge').textContent = data.title.split('—')[0].trim();
+  } else {
+    preview.style.display = 'none';
+  }
+}
+
+// ── AUTO-CHECK BEHAVIOR FROM EVIDENCE ──────────────────────────────
+function autoCheckBehavior(chkKey, evVal) {
+  // Auto-mark behavior as demonstrated when evidence is substantial
+  var quality = rateEvidence(evVal);
+  saveCheck(chkKey, quality === 'strong' || quality === 'developing');
+}
+
+// ── ASSESS ALL EVIDENCE ──────────────────────────────────────────
+function assessAllEvidence() {
+  var data = getLevelData();
+  var dims = Object.keys(data.dims);
+  var PP = ['clarity', 'empathy', 'integrity', 'craftsmanship', 'innovation'];
+
+  var ratings = {};
+  var ppMatches = {};
+  dims.forEach(function(dim) {
+    var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g,'_');
+    var evVal = loadEvidence(evKey) || '';
+    ratings[dim] = rateEvidence(evVal);
+    var lower = evVal.toLowerCase();
+    ppMatches[dim] = PP.filter(function(p){ return lower.indexOf(p) > -1; });
+    // Also check for principle themes
+    if (/\bclear\b|\bsimpl|\bstraightforward\b/.test(lower)) ppMatches[dim].push('clarity(implied)');
+    if (/\buser|\bcustomer|\bneeds|\bpain\b/.test(lower)) ppMatches[dim].push('empathy(implied)');
+    if (/\btrust|\bhonest|\btranspar|\bresponsib/.test(lower)) ppMatches[dim].push('integrity(implied)');
+    if (/\bquality|\bcraft|\bpolish|\bdetail|\bstandard/.test(lower)) ppMatches[dim].push('craftsmanship(implied)');
+    if (/\bnew|\bai\b|\binnovati|\bcreativ|\boriginal|\bfirst/.test(lower)) ppMatches[dim].push('innovation(implied)');
+    // Deduplicate
+    ppMatches[dim] = ppMatches[dim].filter(function(v,i,a){ return a.indexOf(v) === i; });
+  });
+
+  var strongCount = dims.filter(function(d){ return ratings[d]==='strong'; }).length;
+  var devCount = dims.filter(function(d){ return ratings[d]==='developing'; }).length;
+  var emptyCount = dims.length - strongCount - devCount;
+  var pct = Math.round((strongCount + devCount*0.5) / dims.length * 100);
+
+  // Update card headings with quality chips
+  dims.forEach(function(dim) {
+    var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g,'_');
+    var headEl = document.getElementById('head-' + evKey);
+    if (!headEl) return;
+    var r = ratings[dim];
+    var chipClass = r==='strong' ? 'ev-quality-strong' : r==='developing' ? 'ev-quality-developing' : 'ev-quality-needs';
+    var chipLabel = r==='strong' ? '✓ Strong' : r==='developing' ? '↗ Developing' : '○ Needs evidence';
+    var old = headEl.querySelector('.ev-quality-chip');
+    if (old) old.remove();
+    var chip = document.createElement('span');
+    chip.className = 'ev-quality-chip ' + chipClass;
+    chip.textContent = chipLabel;
+    headEl.appendChild(chip);
+  });
+
+  // Build results panel
+  var h = '<div class="assess-result-panel">';
+  h += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)">';
+  h += '<div style="flex:1"><span style="font-size:13px;font-weight:700;color:var(--navy)">Evidence Assessment</span>';
+  h += '<p style="font-size:12px;color:var(--muted);margin-top:2px">' + strongCount + ' strong · ' + devCount + ' developing · ' + emptyCount + ' empty — ' + pct + '% coverage</p></div>';
+  h += '<div class="progress-bar-wrap" style="width:120px;flex-shrink:0"><div class="progress-bar" style="width:' + pct + '%"></div></div>';
+  h += '</div>';
+
+  dims.forEach(function(dim) {
+    var r = ratings[dim];
+    var icon = DIM_ICONS[dim] || { icon: '◆', color: '#EDE9FE', text: '#4C1D95' };
+    var chipClass = r==='strong' ? 'ev-quality-strong' : r==='developing' ? 'ev-quality-developing' : 'ev-quality-needs';
+    var chipLabel = r==='strong' ? '✓ Strong' : r==='developing' ? '↗ Developing' : '○ Needs evidence';
+    var hint = (r !== 'strong' && EV_HINTS[dim]) ? EV_HINTS[dim] : '';
+    var pp = ppMatches[dim].length > 0 ? ppMatches[dim].slice(0,2).join(', ') : '';
+    h += '<div class="assess-dim-row">';
+    h += '<span style="font-size:14px">' + icon.icon + '</span>';
+    h += '<span class="assess-dim-label">' + dim + '</span>';
+    if (pp) h += '<span style="font-size:10px;color:#4F46E5;font-weight:700;white-space:nowrap">' + pp + '</span>';
+    h += '<span class="ev-quality-chip ' + chipClass + '">' + chipLabel + '</span>';
+    h += '</div>';
+    if (hint) h += '<p style="font-size:11px;color:#92400E;padding:4px 14px 8px 38px;line-height:1.5">' + hint + '</p>';
+  });
+  h += '</div>';
+  document.getElementById('assess-results').innerHTML = h;
+  document.getElementById('assess-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── GO DEEPER ──────────────────────────────────────────
+function goDeeper() {
+  var profile = load('profile', {});
+  var name = profile.name || 'Designer';
+  var role = profile.role || 'Not specified';
+  var curData = getLevelData();
+  var levelTitle = curData.title;
+
+  var goalLines = goals.filter(function(g) { return g.title && g.title.trim(); }).map(function(g, i) {
+    var s = autoSmart(g);
+    var smartPct = Math.round(Object.values(s).filter(Boolean).length / 5 * 100);
+    return 'Goal ' + (i+1) + ': ' + g.title + (g.desc ? '\nDetail: ' + g.desc : '') + '\nSMART score: ' + smartPct + '%';
+  }).join('\n\n');
+
+  var prompt = '# PayPal XD Design Goal Assessment\n\n';
+  prompt += 'Please use the design-goal-assessment skill to review these goals.\n\n';
+  prompt += '## Designer\n';
+  prompt += 'Name: ' + name + '\n';
+  prompt += 'Role: ' + role + '\n';
+  prompt += 'Level: ' + levelTitle + '\n\n';
+  prompt += '## 2026 Goals\n\n';
+  prompt += goalLines || '(No goals entered yet)';
+  prompt += '\n\n---\nPlease assess each goal against SMART criteria, PayPal XD Career Framework dimensions, and our team priorities (AI-native design, craft quality, cross-functional influence, systems thinking). Provide specific, actionable feedback on how to strengthen each goal.';
+
+  var modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  var box = document.createElement('div');
+  box.style.cssText = 'background:#fff;border-radius:12px;padding:32px;max-width:540px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)';
+
+  try {
+    navigator.clipboard.writeText(prompt).then(function() {
+      box.innerHTML = buildGoDeeperModal(true, null);
+    }).catch(function() {
+      box.innerHTML = buildGoDeeperModal(false, prompt);
+    });
+  } catch(e) {
+    box.innerHTML = buildGoDeeperModal(false, prompt);
+  }
+
+  modal.appendChild(box);
+  modal.addEventListener('click', function(e) { if (e.target === modal) modal.remove(); });
+  document.body.appendChild(modal);
+}
+
+function buildGoDeeperModal(copied, fallbackPrompt) {
+  var h = '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'
+    + '<div style="width:44px;height:44px;background:linear-gradient(135deg,#4F46E5,#7C3AED);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">✦</div>'
+    + '<div><h3 style="margin:0;font-size:17px;color:#4F46E5">Go Deeper with design-goal-assessment</h3>'
+    + '<p style="margin:4px 0 0;font-size:12px;color:#64748B">Get structured AI feedback on your goals</p></div></div>';
+
+  if (copied) {
+    h += '<div style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:14px 16px;margin-bottom:18px">'
+      + '<p style="margin:0;font-size:13px;color:#15803D;font-weight:700">✓ Prompt copied to clipboard</p>'
+      + '<p style="margin:6px 0 0;font-size:12px;color:#166534">Your goal data is ready to paste into Cowork or Claude.ai.</p></div>';
+  } else {
+    h += '<div style="background:#FEF9C3;border:1px solid #FDE047;border-radius:8px;padding:14px 16px;margin-bottom:12px">'
+      + '<p style="margin:0;font-size:13px;color:#854D0E;font-weight:700">⚠ Copy the prompt below</p></div>'
+      + '<textarea style="width:100%;height:90px;font-size:10px;border:1px solid #E2E8F0;border-radius:6px;padding:8px;resize:vertical;margin-bottom:12px;font-family:monospace" onclick="this.select()">' + (fallbackPrompt||'').replace(/</g,'&lt;') + '</textarea>';
+  }
+
+  h += '<div style="background:#EEF2FF;border:1px solid #C7D2FE;border-radius:8px;padding:12px 16px;margin-bottom:18px;font-size:12px;color:#3730A3;">'
+    + '<strong>In Cowork:</strong> Open a new chat, type <code style="background:#fff;padding:1px 5px;border-radius:3px">/design-goal-assessment</code>, then paste your goals.'
+    + '<br><strong>Or:</strong> Open Claude.ai and paste the prompt directly for a full analysis.</div>';
+
+  h += '<div style="display:flex;gap:10px">'
+    + '<button onclick="window.open(\'https://claude.ai/new\',\'_blank\');this.closest(\'[style*=fixed]\').remove()" '
+    + 'style="flex:1;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">Open Claude.ai →</button>'
+    + '<button onclick="this.closest(\'[style*=fixed]\').remove()" '
+    + 'style="background:#fff;border:1px solid #E2E8F0;color:#475569;border-radius:8px;padding:12px 18px;font-size:13px;cursor:pointer">Cancel</button>'
+    + '</div>';
+  return h;
 }
 
 // ── INIT ──────────────────────────────────────────
