@@ -334,21 +334,12 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
 
 <!-- ═══════════════ SETUP PAGE ═══════════════ -->
 <div id="page-setup" class="page active">
-  <div class="setup-page">
-    <div class="setup-card">
-      <h2>Career Navigation</h2>
-      <p class="subtitle">This tool helps you understand where you are, what's expected, what you need to grow, and how your 2026 goals connect to the PayPal XD Career Framework.</p>
+  <div class="section-header">
+    <h2>Career Navigation</h2>
+    <p>This tool helps create a personal career plan and connect it to XD goals and the design level criteria. What you share here is private and visible only to you until you decide to share it with your manager.</p>
+  </div>
 
-      <!-- Saved profile preview -->
-      <div id="setup-profile-preview" class="setup-preview" style="display:none">
-        <div class="setup-preview-info">
-          <div class="sp-label">Saved Profile</div>
-          <div class="sp-name" id="preview-name">—</div>
-          <div class="sp-role" id="preview-role">—</div>
-        </div>
-        <span id="preview-badge" class="level-badge" style="font-size:12px">L?</span>
-      </div>
-
+  <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:16px;">
       <div class="setup-field">
         <label>Your Name</label>
         <input type="text" id="setup-name" placeholder="e.g. Alex Kim" oninput="saveProfile();updateSetupPreview()">
@@ -446,9 +437,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
         </div>
       </div>
 
-      <button class="btn-primary" onclick="goToAssessment()">Continue →</button>
-      <p class="autosave-note">Your responses auto-save in this browser.</p>
-    </div>
+  </div>
+
+  <div class="page-footer-actions" style="justify-content:space-between;margin-top:16px;">
+    <p class="autosave-note" style="margin:0;align-self:center;">Your responses auto-save in this browser.</p>
+    <button class="btn-continue" onclick="goToAssessment()">Continue →</button>
   </div>
 </div>
 
@@ -488,7 +481,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
   <div id="assess-results"></div>
 
   <div class="page-footer-actions" style="margin-top:24px;justify-content:space-between;">
-    <button class="btn-secondary" onclick="goDeepCurrentLevel()">✦ Go Deeper with AI</button>
+    <button class="btn-secondary" onclick="goDeepCurrentLevel()">✦ Go Deeper on Criteria</button>
     <button class="btn-continue" onclick="showTab('next')">Continue to Getting to Next Level →</button>
   </div>
 </div>
@@ -516,7 +509,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
   </div>
 
   <div class="page-footer-actions" style="justify-content:space-between;">
-    <button class="btn-secondary" onclick="goDeepNextLevel()">✦ Go Deeper with AI</button>
+    <button class="btn-secondary" onclick="goDeepNextLevel()">✦ Go Deeper on Criteria</button>
     <button class="btn-continue" onclick="showTab('ideal')">Continue to My Ideal Role →</button>
   </div>
 </div>
@@ -565,10 +558,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
   </div>
 
   <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:16px;">
-    <div class="setup-field">
-      <label>Describe your ideal role</label>
+    <div class="evidence-label">Describe your ideal role</div>
       <textarea id="ideal-role-desc" class="evidence-area" style="min-height:140px;" placeholder="e.g. My ideal role is one where I own the design strategy for a full product pillar — not just features, but the end-to-end customer experience and the vision behind it. I'd work closely with a senior PM and engineering director to shape what we build, serve as the design voice in roadmap conversations, mentor 2–3 designers, and be recognized for the quality of my decisions as much as the quality of my pixels." oninput="saveIdealRole()"></textarea>
-    </div>
     <!-- Hidden fit slider — kept for data compat, not shown -->
     <input type="range" id="ideal-fit-pct" min="0" max="100" value="50" oninput="saveIdealRole()" style="display:none">
   </div>
@@ -589,7 +580,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
 
   <div class="section-header">
     <h2>Career Navigation Plan</h2>
-    <p>A summary of your current state, growth trajectory, and goals — ready to discuss with your manager.</p>
+    <p>Here's a summary of your 2026 career plan. To share with your manager, click the button below.</p>
   </div>
 
   <!-- Manager view toggle -->
@@ -615,7 +606,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
   </div>
 
   <div id="summary-footer" class="page-footer-actions" style="justify-content:space-between;display:none;">
-    <button class="btn-secondary" onclick="goDeeper()">✦ Go Deeper with AI</button>
+    <button class="btn-secondary" onclick="goDeeper()">✦ Review Summary</button>
     <button class="btn-continue" onclick="window.print()">⬡ Export Plan</button>
   </div>
 </div>
