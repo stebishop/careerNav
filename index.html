@@ -71,6 +71,8 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .card-body.open { display: block; }
 
 .criteria-box { background: var(--light); border: 1px solid #c8dff5; border-radius: 8px; padding: 12px 16px; margin-bottom: 14px; font-size: 13px; line-height: 1.7; color: var(--text); }
+details summary::-webkit-details-marker { display: none; }
+details summary::marker { display: none; }
 .criteria-box p { margin-bottom: 6px; }
 .criteria-box p:last-child { margin-bottom: 0; }
 .criteria-bold { font-weight: 700; color: var(--navy); }
@@ -387,50 +389,6 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
       </div>
   </div>
 
-  <!-- Temperature check -->
-  <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:16px;">
-    <div style="font-size:13px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:18px;">Temperature Check</div>
-
-    <div class="setup-field">
-      <label>How much does this role play to your strengths?</label>
-      <div class="reflection-group">
-        <div class="reflection-wrap">
-          <input type="range" id="ref-strengths" min="1" max="10" value="5" oninput="updateReflection('strengths'); saveProfile()">
-          <div class="r-score-wrap">
-            <span class="r-score-num" id="ref-strengths-num">5</span>
-            <span class="r-score-word" id="ref-strengths-word">Somewhat</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="setup-field">
-      <label>How much does it align with where you want to take your career?</label>
-      <div class="reflection-group">
-        <div class="reflection-wrap">
-          <input type="range" id="ref-align" min="1" max="10" value="5" oninput="updateReflection('align'); saveProfile()">
-          <div class="r-score-wrap">
-            <span class="r-score-num" id="ref-align-num">5</span>
-            <span class="r-score-word" id="ref-align-word">Somewhat</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="setup-field" style="margin-bottom:0">
-      <label>How much room does this role give you to learn and grow?</label>
-      <div class="reflection-group">
-        <div class="reflection-wrap">
-          <input type="range" id="ref-learning" min="1" max="10" value="5" oninput="updateReflection('learning'); saveProfile()">
-          <div class="r-score-wrap">
-            <span class="r-score-num" id="ref-learning-num">5</span>
-            <span class="r-score-word" id="ref-learning-word">Somewhat</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="page-footer-actions" style="justify-content:space-between;margin-top:16px;">
     <p class="autosave-note" style="margin:0;align-self:center;">Your responses auto-save in this browser.</p>
     <button class="btn-continue" onclick="goToAssessment()">Continue →</button>
@@ -502,11 +460,6 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
     <p>[Optional] Add examples for each behavior that distinguishes the next level. Your progress will be reflected in the Career Plan summary.</p>
   </div>
 
-  <div id="next-locked-notice" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:32px;text-align:center;margin-bottom:16px;">
-    <p style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px;">Not targeting promotion this year</p>
-    <p style="font-size:13px;color:var(--muted);">Toggle "Targeting promotion this year" above to unlock and document your next-level criteria.</p>
-  </div>
-
   <div id="transition-cards"></div>
 
   <div id="no-transition" style="display:none;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:32px;text-align:center;">
@@ -560,12 +513,12 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
 
   <div class="section-header">
     <h2>My Ideal Role</h2>
-    <p>Think beyond your current day-to-day and envision the role you want.</p>
+    <p>Think beyond your current day-to-day responsibilities and describe the role that best aligns with your experience, interests and skills.</p>
   </div>
 
   <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:16px;">
     <div class="evidence-label">Describe your ideal role</div>
-      <textarea id="ideal-role-desc" class="evidence-area" style="min-height:140px;" placeholder="e.g. My ideal role is one where I own the design strategy for a full product pillar — not just features, but the end-to-end customer experience and the vision behind it. I'd work closely with a senior PM and engineering director to shape what we build, serve as the design voice in roadmap conversations, mentor 2–3 designers, and be recognized for the quality of my decisions as much as the quality of my pixels." oninput="saveIdealRole()"></textarea>
+      <textarea id="ideal-role-desc" class="evidence-area" style="min-height:140px;" placeholder="e.g. I thrive when I own the design strategy for a full product area — working closely with a senior PM and engineering director to shape what we build, bringing a strong point of view to roadmap conversations, and mentoring others. I want a role where my experience in systems thinking and cross-functional influence is front and center, and where I have space to grow into the craft and leadership dimensions I'm most energized by." oninput="saveIdealRole()"></textarea>
     <!-- Hidden fit slider — kept for data compat, not shown -->
     <input type="range" id="ideal-fit-pct" min="0" max="100" value="50" oninput="saveIdealRole()" style="display:none">
   </div>
@@ -949,9 +902,7 @@ function setPromo(val, silent) {
     lbl.textContent = val ? 'Targeting promotion this year' : 'Not targeting promotion this year';
     lbl.style.color = val ? 'var(--green)' : 'var(--muted)';
   }
-  var locked = document.getElementById('next-locked-notice');
   var cards = document.getElementById('transition-cards');
-  if (locked) locked.style.display = val ? 'none' : 'block';
   if (cards) cards.classList.toggle('next-locked', !val);
   if (!silent) saveProfile();
 }
@@ -1170,9 +1121,7 @@ function renderNextLevel() {
     nextTirWrap.style.display = 'block';
   } else if (nextTirWrap) { nextTirWrap.style.display = 'none'; }
   // Sync locked state
-  var locked = document.getElementById('next-locked-notice');
   var cards = document.getElementById('transition-cards');
-  if (locked) locked.style.display = PROMO_TARGET ? 'none' : 'block';
   if (cards) cards.classList.toggle('next-locked', !PROMO_TARGET);
 
   var curData = getLevelData();
@@ -1653,49 +1602,79 @@ function renderSummary() {
 
   // BUILD HTML
   var h = '';
-  var refS = parseInt(profile.ref_strengths || satisfaction);
-  var refAl = parseInt(profile.ref_align || satisfaction);
-  var refLe = parseInt(profile.ref_learning || satisfaction);
 
   // Block 1 — Current Role
   h += '<div class="summary-block"><h3>Current Role</h3>';
   if (roledesc) {
     h += '<div class="summary-row"><span class="summary-key">Role Description</span><span class="summary-val" style="white-space:pre-wrap;font-size:13px;line-height:1.7;color:var(--text)">' + escHtml(roledesc) + '</span></div>';
   }
-  var reflectionRows = [
-    { label: 'Strengths fit', val: refS },
-    { label: 'Career alignment', val: refAl },
-    { label: 'Learning room', val: refLe }
-  ];
-  h += '<div class="summary-row"><span class="summary-key">Role Reflection</span><span class="summary-val">';
-  reflectionRows.forEach(function(r) {
-    var rColor = r.val <= 3 ? '#DC2626' : r.val <= 6 ? '#D97706' : '#16A34A';
-    h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">';
-    h += '<span style="font-size:12px;color:var(--muted);min-width:120px">' + r.label + '</span>';
-    h += '<span style="font-size:16px;font-weight:900;color:' + rColor + '">' + r.val + '/10</span>';
-    h += '<span style="font-size:11px;color:var(--muted)">' + getSatisfactionLabel(r.val) + '</span>';
-    h += '</div>';
-  });
-  h += '</span></div>';
   h += '</div>';
 
-  // Block 2 — Current Level Evidence (full text per dimension)
+  // Block 2 — Current Level Evidence (collapsible per dimension with criteria)
   h += '<div class="summary-block"><h3>Current Level Evidence</h3>';
-  if (filledEvidence === 0) {
-    h += '<p style="font-size:13px;color:var(--muted);font-style:italic">No evidence added yet — go to My Current Level to add examples for each dimension.</p>';
-  } else {
-    dims.forEach(function(dim) {
-      var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g, '_');
-      var evVal = (loadEvidence(evKey) || '').trim();
-      if (evVal.length > 20) {
-        h += '<div style="margin-bottom:16px;">';
-        h += '<div style="font-size:12px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">' + dim + '</div>';
-        h += '<div style="font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap">' + escHtml(evVal) + '</div>';
-        h += '</div>';
-      }
-    });
-  }
+  dims.forEach(function(dim) {
+    var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g, '_');
+    var evVal = (loadEvidence(evKey) || '').trim();
+    var icon = DIM_ICONS[dim] || { icon: '◆', color: '#EDE9FE', text: '#4C1D95' };
+    var hasEv = evVal.length > 10;
+    h += '<details style="margin-bottom:10px;border:1px solid var(--border);border-radius:8px;overflow:hidden">';
+    h += '<summary style="padding:11px 14px;background:var(--light);cursor:pointer;display:flex;align-items:center;gap:10px;list-style:none;font-size:13px;font-weight:700;color:var(--navy);user-select:none">';
+    h += '<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:' + icon.color + ';color:' + icon.text + ';border-radius:5px;font-size:11px;flex-shrink:0">' + icon.icon + '</span>';
+    h += '<span style="flex:1">' + dim + '</span>';
+    h += hasEv ? '<span style="font-size:11px;font-weight:400;color:#16A34A">Evidence added ✓</span>' : '<span style="font-size:11px;font-weight:400;color:var(--muted)">No evidence yet</span>';
+    h += '</summary>';
+    h += '<div style="padding:16px">';
+    h += '<div style="background:#f0f4ff;border:1px solid #c7d2fe;border-radius:6px;padding:12px 14px;margin-bottom:12px">';
+    h += '<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#6366f1;margin-bottom:6px">Level Criteria</div>';
+    h += '<div style="font-size:12px;line-height:1.7;color:var(--navy)">' + (curData.dims[dim] || '') + '</div>';
+    h += '</div>';
+    if (hasEv) {
+      h += '<div style="font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap">' + escHtml(evVal) + '</div>';
+    } else {
+      h += '<p style="font-size:12px;color:var(--muted);font-style:italic;margin:0">No evidence added yet — go to My Current Level to add examples for this dimension.</p>';
+    }
+    h += '</div></details>';
+  });
   h += '</div>';
+
+  // Block 2b — Next Level Evidence (collapsible, only if targeting promo)
+  if (PROMO_TARGET) {
+    var tKeyS = getTransitionKey();
+    var transS = IC_TRANSITIONS[tKeyS];
+    if (transS) {
+      var nextDims = Object.keys(transS.dims);
+      h += '<div class="summary-block"><h3>Next Level Evidence</h3>';
+      nextDims.forEach(function(dim) {
+        var icon = DIM_ICONS[dim] || { icon: '◆', color: '#EDE9FE', text: '#4C1D95' };
+        var behaviors = transS.dims[dim];
+        var dimEvs = behaviors.map(function(beh, i) {
+          var evKey = 'ev_next_' + TRACK + '_' + tKeyS + '_' + dim.replace(/\s+/g,'_') + '_' + i;
+          return { beh: beh, val: (loadEvidence(evKey) || '').trim() };
+        });
+        var hasAny = dimEvs.some(function(e) { return e.val.length > 0; });
+        h += '<details style="margin-bottom:10px;border:1px solid var(--border);border-radius:8px;overflow:hidden">';
+        h += '<summary style="padding:11px 14px;background:var(--light);cursor:pointer;display:flex;align-items:center;gap:10px;list-style:none;font-size:13px;font-weight:700;color:var(--navy);user-select:none">';
+        h += '<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:' + icon.color + ';color:' + icon.text + ';border-radius:5px;font-size:11px;flex-shrink:0">' + icon.icon + '</span>';
+        h += '<span style="flex:1">' + dim + '</span>';
+        h += hasAny ? '<span style="font-size:11px;font-weight:400;color:#16A34A">Evidence added ✓</span>' : '<span style="font-size:11px;font-weight:400;color:var(--muted)">No evidence yet</span>';
+        h += '</summary>';
+        h += '<div style="padding:16px">';
+        dimEvs.forEach(function(e, i) {
+          var isLast = i === dimEvs.length - 1;
+          h += '<div style="margin-bottom:' + (isLast ? '0' : '14px') + ';padding-bottom:' + (isLast ? '0' : '14px') + ';' + (isLast ? '' : 'border-bottom:1px solid #f0f0f0') + '">';
+          h += '<div style="font-size:12px;color:var(--navy);line-height:1.6;margin-bottom:6px">' + e.beh + '</div>';
+          if (e.val) {
+            h += '<div style="font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap;background:#f8f9fa;border-radius:6px;padding:8px 10px">' + escHtml(e.val) + '</div>';
+          } else {
+            h += '<div style="font-size:12px;color:var(--muted);font-style:italic">No evidence added yet.</div>';
+          }
+          h += '</div>';
+        });
+        h += '</div></details>';
+      });
+      h += '</div>';
+    }
+  }
 
   // Block 3 — Ideal Role (description only, no fit measurement)
   if (idealDesc) {
