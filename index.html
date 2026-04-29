@@ -322,10 +322,15 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
     <h1>XD Career Navigation</h1>
   </div>
   <div class="header-right">
-    <button class="btn btn-ghost" onclick="window.print()">⬡ Print / Export</button>
-    <button class="btn btn-white" onclick="clearAll()">Reset</button>
+    <div id="file-save-status" style="display:none;align-items:center;gap:4px;font-size:11px;color:rgba(255,255,255,.8);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+    <button class="btn btn-white" onclick="loadPlanFromFile()" title="Load a saved plan from a JSON file">📂 Load Plan</button>
+    <button class="btn btn-white" onclick="savePlanToFile()" title="Save plan to a JSON file on your computer">💾 Save Plan</button>
+    <button class="btn btn-ghost" onclick="window.print()">⬡ Print</button>
+    <button class="btn btn-ghost" onclick="clearAll()">Reset</button>
   </div>
 </div>
+<!-- Toast -->
+<div id="toast-msg" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);background:#16A34A;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none"></div>
 
 <!-- TAB NAV -->
 <div class="tabnav">
@@ -777,33 +782,26 @@ function getKey(k) { return 'xdca_' + k; }
 function save(k, v) { try { localStorage.setItem(getKey(k), JSON.stringify(v)); } catch(e){} }
 function load(k, def) { try { var v = localStorage.getItem(getKey(k)); return v !== null ? JSON.parse(v) : def; } catch(e) { return def; } }
 
-function saveEvidence(key, val) { save('ev_' + key, val); }
+function saveEvidence(key, val) { save('ev_' + key, val); autoSaveToFile(); }
 function loadEvidence(key) { return load('ev_' + key, ''); }
 function saveCheck(key, val) { save('chk_' + key, val); }
 function loadCheck(key) { return load('chk_' + key, false); }
 
 function saveProfile() {
-  var refS = document.getElementById('ref-strengths');
-  var refA = document.getElementById('ref-align');
-  var refL = document.getElementById('ref-learning');
-  var avg = Math.round(((refS ? parseInt(refS.value) : 5) + (refA ? parseInt(refA.value) : 5) + (refL ? parseInt(refL.value) : 5)) / 3);
   save('profile', {
     name: document.getElementById('setup-name').value,
     role: document.getElementById('setup-role').value,
     roledesc: document.getElementById('setup-roledesc').value,
     rolestart: document.getElementById('setup-rolestart').value,
-    satisfaction: avg,
-    ref_strengths: refS ? refS.value : '5',
-    ref_align: refA ? refA.value : '5',
-    ref_learning: refL ? refL.value : '5',
     promo: PROMO_TARGET,
     track: TRACK,
     level: LEVEL
   });
+  autoSaveToFile();
 }
 
-function saveGoals() { save('goals', goals); }
-function saveReflection() { save('reflection', document.getElementById('reflection-text').value); }
+function saveGoals() { save('goals', goals); autoSaveToFile(); }
+function saveReflection() { save('reflection', document.getElementById('reflection-text') ? document.getElementById('reflection-text').value : ''); }
 
 function loadAll() {
   var profile = load('profile', null);
@@ -817,12 +815,6 @@ function loadAll() {
     var sel = document.getElementById('setup-level-select');
     if (sel) sel.value = LEVEL;
     if (profile.rolestart) updateTimeInRole();
-    // Load reflection sliders
-    var refMap = { strengths: profile.ref_strengths, align: profile.ref_align, learning: profile.ref_learning };
-    ['strengths','align','learning'].forEach(function(f) {
-      var el = document.getElementById('ref-' + f);
-      if (el && refMap[f] !== undefined) { el.value = refMap[f]; updateReflection(f); }
-    });
     // Load promotion
     if (profile.promo !== undefined) setPromo(profile.promo, true);
   }
@@ -834,6 +826,173 @@ function loadAll() {
     goals.forEach(function(g) { if (!g.smart) g.smart = {}; if (!g.org) g.org = ''; if (!g.successEx) g.successEx = ''; });
     goalCount = Math.max.apply(null, goals.map(function(g){return g.id||0;}));
   }
+}
+
+// ── FILE SAVE / LOAD ──────────────────────────────────────
+var fileHandle = null;
+var autoSaveTimer = null;
+
+function gatherPlanData() {
+  var curData = getLevelData();
+  var dims = Object.keys(curData.dims);
+  var currentEvidence = {};
+  dims.forEach(function(dim) {
+    var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g, '_');
+    var val = (loadEvidence(evKey) || '').trim();
+    if (val) currentEvidence[dim] = val;
+  });
+  var nextEvidence = {};
+  var tKey = getTransitionKey();
+  if (tKey && IC_TRANSITIONS[tKey]) {
+    var trans = IC_TRANSITIONS[tKey];
+    Object.keys(trans.dims).forEach(function(dim) {
+      trans.dims[dim].forEach(function(beh, i) {
+        var evKey = 'ev_next_' + TRACK + '_' + tKey + '_' + dim.replace(/\s+/g,'_') + '_' + i;
+        var val = (loadEvidence(evKey) || '').trim();
+        if (val) nextEvidence[dim + '__' + i] = { behavior: beh, evidence: val };
+      });
+    });
+  }
+  return {
+    version: '1.0',
+    savedAt: new Date().toISOString(),
+    profile: load('profile', {}),
+    currentEvidence: currentEvidence,
+    nextEvidence: nextEvidence,
+    idealRole: load('idealrole', {}),
+    goals: load('goals', [])
+  };
+}
+
+function restoreFromPlanData(data) {
+  if (!data || !data.profile) { showToast('Invalid file — could not load plan.', true); return; }
+  save('profile', data.profile);
+  if (data.idealRole) save('idealrole', data.idealRole);
+  if (data.goals && data.goals.length) save('goals', data.goals);
+  loadAll();
+  // Restore current evidence using resolved LEVEL/TRACK
+  if (data.currentEvidence) {
+    var curData = getLevelData();
+    Object.keys(data.currentEvidence).forEach(function(dim) {
+      var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g,'_');
+      saveEvidenceSilent(evKey, data.currentEvidence[dim]);
+    });
+  }
+  // Restore next-level evidence
+  if (data.nextEvidence) {
+    var tKey = getTransitionKey();
+    if (tKey && IC_TRANSITIONS[tKey]) {
+      var trans = IC_TRANSITIONS[tKey];
+      Object.keys(trans.dims).forEach(function(dim) {
+        trans.dims[dim].forEach(function(beh, i) {
+          var k = dim + '__' + i;
+          if (data.nextEvidence[k]) {
+            var evKey = 'ev_next_' + TRACK + '_' + tKey + '_' + dim.replace(/\s+/g,'_') + '_' + i;
+            var val = (typeof data.nextEvidence[k] === 'object') ? data.nextEvidence[k].evidence : data.nextEvidence[k];
+            saveEvidenceSilent(evKey, val);
+          }
+        });
+      });
+    }
+  }
+  renderCurrentLevel();
+  renderTransition();
+  renderGoals();
+  showToast('Plan loaded ✓');
+}
+
+// Silent version that skips auto-save (used during restore to avoid feedback loop)
+function saveEvidenceSilent(key, val) { save('ev_' + key, val); }
+
+async function savePlanToFile() {
+  var profile = load('profile', {});
+  var name = (profile.name || 'my-plan').replace(/\s+/g, '-').toLowerCase();
+  var data = gatherPlanData();
+  var json = JSON.stringify(data, null, 2);
+  if (window.showSaveFilePicker) {
+    try {
+      var handle = fileHandle || await window.showSaveFilePicker({
+        suggestedName: 'career-nav-' + name + '.json',
+        types: [{ description: 'Career Plan', accept: { 'application/json': ['.json'] } }]
+      });
+      fileHandle = handle;
+      var w = await handle.createWritable();
+      await w.write(json); await w.close();
+      setFileSavedStatus(handle.name);
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; }
+  }
+  // Fallback: trigger download
+  var blob = new Blob([json], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'career-nav-' + name + '.json'; a.click();
+  URL.revokeObjectURL(url);
+  setFileSavedStatus('career-nav-' + name + '.json (downloaded)');
+}
+
+async function loadPlanFromFile() {
+  if (window.showOpenFilePicker) {
+    try {
+      var handles = await window.showOpenFilePicker({
+        types: [{ description: 'Career Plan', accept: { 'application/json': ['.json'] } }],
+        multiple: false
+      });
+      fileHandle = handles[0];
+      var file = await fileHandle.getFile();
+      restoreFromPlanData(JSON.parse(await file.text()));
+      setFileSavedStatus(fileHandle.name);
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; }
+  }
+  // Fallback: file input
+  var input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json';
+  input.onchange = function() {
+    var file = input.files[0]; if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try { restoreFromPlanData(JSON.parse(e.target.result)); }
+      catch(err) { showToast('Could not read file.', true); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function autoSaveToFile() {
+  if (!fileHandle) return;
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(async function() {
+    try {
+      var w = await fileHandle.createWritable();
+      await w.write(JSON.stringify(gatherPlanData(), null, 2));
+      await w.close();
+      setFileSavedStatus(fileHandle.name);
+    } catch(e) {}
+  }, 1200);
+}
+
+function setFileSavedStatus(filename) {
+  var el = document.getElementById('file-save-status');
+  if (!el) return;
+  var now = new Date();
+  var t = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+  el.innerHTML = '<span style="color:#16A34A">✓</span> ' + filename + ' <span style="color:var(--muted)">· saved ' + t + '</span>';
+  el.style.display = 'flex';
+}
+
+var toastTimer = null;
+function showToast(msg, isError) {
+  var el = document.getElementById('toast-msg');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.background = isError ? '#DC2626' : '#16A34A';
+  el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() {
+    el.style.opacity = '0'; el.style.transform = 'translateY(8px)';
+  }, 2800);
 }
 
 // ── TIME IN ROLE ──────────────────────────────────────────
@@ -935,10 +1094,12 @@ function toggleManagerView(el) {
 }
 
 function saveIdealRole() {
+  var fitEl = document.getElementById('ideal-fit-pct');
   save('idealrole', {
     desc: document.getElementById('ideal-role-desc').value,
-    fit: document.getElementById('ideal-fit-pct').value
+    fit: fitEl ? fitEl.value : 50
   });
+  autoSaveToFile();
 }
 
 function updateFitPct() {
