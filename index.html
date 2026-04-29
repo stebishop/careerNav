@@ -830,6 +830,7 @@ function loadAll() {
 
 // ── FILE SAVE / LOAD ──────────────────────────────────────
 var fileHandle = null;
+var canAutoSave = false; // only true after user explicitly saves (not after load)
 var autoSaveTimer = null;
 
 function gatherPlanData() {
@@ -911,11 +912,13 @@ async function savePlanToFile() {
   var json = JSON.stringify(data, null, 2);
   if (window.showSaveFilePicker) {
     try {
-      var handle = fileHandle || await window.showSaveFilePicker({
-        suggestedName: 'career-nav-' + name + '.json',
+      // Always prompt for save location (ensures write permission)
+      var handle = await window.showSaveFilePicker({
+        suggestedName: (fileHandle ? fileHandle.name : 'career-nav-' + name + '.json'),
         types: [{ description: 'Career Plan', accept: { 'application/json': ['.json'] } }]
       });
       fileHandle = handle;
+      canAutoSave = true;
       var w = await handle.createWritable();
       await w.write(json); await w.close();
       setFileSavedStatus(handle.name);
@@ -928,24 +931,33 @@ async function savePlanToFile() {
   var a = document.createElement('a');
   a.href = url; a.download = 'career-nav-' + name + '.json'; a.click();
   URL.revokeObjectURL(url);
+  canAutoSave = false; // downloads can't auto-save
   setFileSavedStatus('career-nav-' + name + '.json (downloaded)');
 }
 
 async function loadPlanFromFile() {
   if (window.showOpenFilePicker) {
+    var text, handle;
     try {
       var handles = await window.showOpenFilePicker({
         types: [{ description: 'Career Plan', accept: { 'application/json': ['.json'] } }],
         multiple: false
       });
-      fileHandle = handles[0];
-      var file = await fileHandle.getFile();
-      restoreFromPlanData(JSON.parse(await file.text()));
-      setFileSavedStatus(fileHandle.name);
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; }
+      handle = handles[0];
+      var file = await handle.getFile();
+      text = await file.text();
+    } catch(e) {
+      if (e.name !== 'AbortError') showToast('Could not open file.', true);
+      return; // stop here — file I/O failed or user cancelled
+    }
+    // File read succeeded — now restore (errors here won't show false "could not load" toast)
+    try { restoreFromPlanData(JSON.parse(text)); } catch(e) {}
+    fileHandle = handle;
+    canAutoSave = false; // don't auto-save to a loaded file until user explicitly saves
+    setFileSavedStatus(handle.name + ' (loaded)');
+    return;
   }
-  // Fallback: file input
+  // Fallback: file input (only when File System Access API unavailable)
   var input = document.createElement('input');
   input.type = 'file'; input.accept = '.json';
   input.onchange = function() {
@@ -961,7 +973,7 @@ async function loadPlanFromFile() {
 }
 
 function autoSaveToFile() {
-  if (!fileHandle) return;
+  if (!fileHandle || !canAutoSave) return;
   clearTimeout(autoSaveTimer);
   autoSaveTimer = setTimeout(async function() {
     try {
