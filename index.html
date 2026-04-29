@@ -339,104 +339,92 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
     <p>This tool helps create a personal career plan and connect it to XD goals and the design level criteria. What you share here is private and visible only to you until you decide to share it with your manager.</p>
   </div>
 
+  <!-- Profile bar with editable fields -->
+  <div class="profile-bar" style="flex-wrap:wrap;gap:16px;align-items:flex-end;margin-bottom:16px;">
+    <div style="flex:1;min-width:130px;">
+      <label>Your Name</label>
+      <input type="text" id="setup-name" placeholder="e.g. Alex Kim" oninput="saveProfile()">
+    </div>
+    <div style="flex:2;min-width:180px;">
+      <label>Role Title</label>
+      <input type="text" id="setup-role" placeholder="e.g. Senior XD Designer, Checkout" oninput="saveProfile()">
+    </div>
+    <div>
+      <label>Level</label>
+      <select id="setup-level-select" onchange="selectLevelFromDropdown(this.value)">
+        <optgroup label="Individual Contributor">
+          <option value="5">L5 — XD Designer</option>
+          <option value="6" selected>L6 — Senior XD Designer</option>
+          <option value="7">L7 — Staff XD Designer</option>
+          <option value="8">L8 — Senior Staff XD Designer</option>
+          <option value="9">L9 — Principal XD Designer</option>
+          <option value="10">L10 — Distinguished XD Designer</option>
+        </optgroup>
+        <optgroup label="Manager">
+          <option value="m7">L7M — Design Manager</option>
+          <option value="m8">L8M — Senior XD Manager</option>
+          <option value="m9">L9M — Director, XD</option>
+          <option value="m10">L10M — Sr. Director, XD</option>
+        </optgroup>
+      </select>
+    </div>
+    <div>
+      <label>Started Role</label>
+      <input type="date" id="setup-rolestart" oninput="saveProfile(); updateTimeInRole()" style="border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;background:#fff;cursor:pointer;">
+      <div class="time-in-role-display hidden" id="time-in-role-badge" style="margin-top:4px;">⏱ —</div>
+    </div>
+  </div>
+
+  <!-- Role description -->
   <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:16px;">
-      <div class="setup-field">
-        <label>Your Name</label>
-        <input type="text" id="setup-name" placeholder="e.g. Alex Kim" oninput="saveProfile();updateSetupPreview()">
-      </div>
-
-      <div class="setup-field">
-        <label>Role Title</label>
-        <input type="text" id="setup-role" placeholder="e.g. Senior XD Designer, Checkout" oninput="saveProfile();updateSetupPreview()">
-      </div>
-
-      <div class="setup-field">
-        <label>Track</label>
-        <div class="track-toggle">
-          <button id="track-ic" class="track-btn active" onclick="setTrack('ic')">Individual Contributor (IC)</button>
-          <button id="track-mgr" class="track-btn" onclick="setTrack('mgr')">Manager</button>
-        </div>
-      </div>
-
-      <div class="setup-field">
-        <label>Select Your Current Level</label>
-        <div id="level-grid-ic" class="level-grid">
-          <button class="level-btn" data-lvl="5" onclick="selectLevel('5')"><span class="lnum">L5</span><span class="ltitle">XD Designer</span></button>
-          <button class="level-btn" data-lvl="6" onclick="selectLevel('6')"><span class="lnum">L6</span><span class="ltitle">Senior XD Designer</span></button>
-          <button class="level-btn" data-lvl="7" onclick="selectLevel('7')"><span class="lnum">L7</span><span class="ltitle">Staff XD Designer</span></button>
-          <button class="level-btn" data-lvl="8" onclick="selectLevel('8')"><span class="lnum">L8</span><span class="ltitle">Senior Staff</span></button>
-          <button class="level-btn" data-lvl="9" onclick="selectLevel('9')"><span class="lnum">L9</span><span class="ltitle">Principal</span></button>
-          <button class="level-btn" data-lvl="10" onclick="selectLevel('10')"><span class="lnum">L10</span><span class="ltitle">Distinguished</span></button>
-        </div>
-        <div id="level-grid-mgr" class="level-grid" style="display:none">
-          <button class="level-btn" data-lvl="m7" onclick="selectLevel('m7')"><span class="lnum">L7</span><span class="ltitle">Design Manager</span></button>
-          <button class="level-btn" data-lvl="m8" onclick="selectLevel('m8')"><span class="lnum">L8</span><span class="ltitle">Senior Mgr</span></button>
-          <button class="level-btn" data-lvl="m9" onclick="selectLevel('m9')"><span class="lnum">L9</span><span class="ltitle">Director</span></button>
-          <button class="level-btn" data-lvl="m10" onclick="selectLevel('m10')"><span class="lnum">L10</span><span class="ltitle">Sr. Director</span></button>
-        </div>
-      </div>
-
-      <div class="setup-field">
-        <label>Time in Role — When did you start this role?</label>
-        <input type="date" id="setup-rolestart" oninput="saveProfile(); updateTimeInRole()" style="width:auto;max-width:220px;">
-        <div class="time-in-role-display hidden" id="time-in-role-badge">⏱ —</div>
-      </div>
-
-      <div class="setup-field">
+      <div class="setup-field" style="margin-bottom:0">
         <label>Describe the Role You Currently Occupy</label>
         <textarea id="setup-roledesc" placeholder="e.g. I am a Senior XD Designer embedded in the Checkout team, where I own the end-to-end design for the payment method selection and confirmation flows. Day-to-day I work directly with a PM and engineering lead to scope and ship features, run weekly design reviews, and mentor one junior designer. I make decisions about UX patterns, edge case handling, and when to escalate design risks to the design manager." oninput="saveProfile()"></textarea>
       </div>
+  </div>
 
-      <div class="setup-field">
-        <label>How much does this role play to your strengths?</label>
-        <div class="reflection-group">
-          <div class="reflection-wrap">
-            <input type="range" id="ref-strengths" min="1" max="10" value="5" oninput="updateReflection('strengths'); saveProfile()">
-            <div class="r-score-wrap">
-              <span class="r-score-num" id="ref-strengths-num">5</span>
-              <span class="r-score-word" id="ref-strengths-word">Somewhat</span>
-            </div>
+  <!-- Temperature check -->
+  <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:16px;">
+    <div style="font-size:13px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:18px;">Temperature Check</div>
+
+    <div class="setup-field">
+      <label>How much does this role play to your strengths?</label>
+      <div class="reflection-group">
+        <div class="reflection-wrap">
+          <input type="range" id="ref-strengths" min="1" max="10" value="5" oninput="updateReflection('strengths'); saveProfile()">
+          <div class="r-score-wrap">
+            <span class="r-score-num" id="ref-strengths-num">5</span>
+            <span class="r-score-word" id="ref-strengths-word">Somewhat</span>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="setup-field">
-        <label>How much does it align with where you want to take your career?</label>
-        <div class="reflection-group">
-          <div class="reflection-wrap">
-            <input type="range" id="ref-align" min="1" max="10" value="5" oninput="updateReflection('align'); saveProfile()">
-            <div class="r-score-wrap">
-              <span class="r-score-num" id="ref-align-num">5</span>
-              <span class="r-score-word" id="ref-align-word">Somewhat</span>
-            </div>
+    <div class="setup-field">
+      <label>How much does it align with where you want to take your career?</label>
+      <div class="reflection-group">
+        <div class="reflection-wrap">
+          <input type="range" id="ref-align" min="1" max="10" value="5" oninput="updateReflection('align'); saveProfile()">
+          <div class="r-score-wrap">
+            <span class="r-score-num" id="ref-align-num">5</span>
+            <span class="r-score-word" id="ref-align-word">Somewhat</span>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="setup-field">
-        <label>How much room does this role give you to learn and grow?</label>
-        <div class="reflection-group">
-          <div class="reflection-wrap">
-            <input type="range" id="ref-learning" min="1" max="10" value="5" oninput="updateReflection('learning'); saveProfile()">
-            <div class="r-score-wrap">
-              <span class="r-score-num" id="ref-learning-num">5</span>
-              <span class="r-score-word" id="ref-learning-word">Somewhat</span>
-            </div>
+    <div class="setup-field" style="margin-bottom:0">
+      <label>How much room does this role give you to learn and grow?</label>
+      <div class="reflection-group">
+        <div class="reflection-wrap">
+          <input type="range" id="ref-learning" min="1" max="10" value="5" oninput="updateReflection('learning'); saveProfile()">
+          <div class="r-score-wrap">
+            <span class="r-score-num" id="ref-learning-num">5</span>
+            <span class="r-score-word" id="ref-learning-word">Somewhat</span>
           </div>
         </div>
       </div>
-
-      <div class="setup-field">
-        <label>Are you targeting promotion in 2026?</label>
-        <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
-          <div class="toggle-sw" id="promo-toggle-sw" onclick="setPromoToggle(this)" style="cursor:pointer">
-            <div class="toggle-track"></div>
-            <div class="toggle-thumb"></div>
-          </div>
-          <span id="promo-toggle-label" style="font-size:13px;color:var(--muted);font-weight:600">Not targeting this year</span>
-        </div>
-      </div>
-
+    </div>
   </div>
 
   <div class="page-footer-actions" style="justify-content:space-between;margin-top:16px;">
@@ -467,7 +455,16 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
   </div>
 
   <div class="section-header">
-    <h2 id="cur-level-title">My Current Level</h2>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:6px;">
+      <h2 id="cur-level-title" style="margin:0">My Current Level</h2>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="toggle-sw" id="promo-toggle-sw" onclick="setPromoToggle(this)" style="cursor:pointer">
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </div>
+        <span id="promo-toggle-label" style="font-size:13px;color:var(--muted);font-weight:600">Not targeting promotion this year</span>
+      </div>
+    </div>
     <p id="cur-level-sub">These are the expectations at your level. For each dimension, add evidence of how you're demonstrating this in your work.</p>
   </div>
 
@@ -868,8 +865,10 @@ function loadAll() {
     document.getElementById('setup-role').value = profile.role || '';
     document.getElementById('setup-roledesc').value = profile.roledesc || '';
     document.getElementById('setup-rolestart').value = profile.rolestart || '';
-    if (profile.track) setTrack(profile.track, true);
     if (profile.level) selectLevel(profile.level, true);
+    else if (profile.track) setTrack(profile.track, true);
+    var sel = document.getElementById('setup-level-select');
+    if (sel) sel.value = LEVEL;
     if (profile.rolestart) updateTimeInRole();
     // Load reflection sliders
     var refMap = { strengths: profile.ref_strengths, align: profile.ref_align, learning: profile.ref_learning };
@@ -879,14 +878,13 @@ function loadAll() {
     });
     // Load promotion
     if (profile.promo !== undefined) setPromo(profile.promo, true);
-    updateSetupPreview();
   }
   goals = load('goals', []);
   if (goals.length === 0) {
-    goals = [{id:1,title:'',desc:'',smart:{},org:''},{id:2,title:'',desc:'',smart:{},org:''},{id:3,title:'',desc:'',smart:{},org:''}];
+    goals = [{id:1,title:'',desc:'',successEx:'',smart:{},org:''},{id:2,title:'',desc:'',successEx:'',smart:{},org:''},{id:3,title:'',desc:'',successEx:'',smart:{},org:''}];
     goalCount = 3;
   } else {
-    goals.forEach(function(g) { if (!g.smart) g.smart = {}; if (!g.org) g.org = ''; });
+    goals.forEach(function(g) { if (!g.smart) g.smart = {}; if (!g.org) g.org = ''; if (!g.successEx) g.successEx = ''; });
     goalCount = Math.max.apply(null, goals.map(function(g){return g.id||0;}));
   }
 }
@@ -1036,25 +1034,24 @@ function showTab(id) {
 
 function setTrack(track, silent) {
   TRACK = track;
-  document.getElementById('track-ic').classList.toggle('active', track === 'ic');
-  document.getElementById('track-mgr').classList.toggle('active', track === 'mgr');
-  document.getElementById('level-grid-ic').style.display = track === 'ic' ? 'grid' : 'none';
-  document.getElementById('level-grid-mgr').style.display = track === 'mgr' ? 'grid' : 'none';
-  // Reset level selection
-  LEVEL = track === 'ic' ? '6' : 'm7';
-  document.querySelectorAll('.level-btn').forEach(function(b){ b.classList.remove('selected'); });
-  var btn = document.querySelector('.level-btn[data-lvl="' + LEVEL + '"]');
-  if (btn) btn.classList.add('selected');
+  // Legacy button refs (kept for compat if elements still exist)
+  var tic = document.getElementById('track-ic'); if (tic) tic.classList.toggle('active', track === 'ic');
+  var tmgr = document.getElementById('track-mgr'); if (tmgr) tmgr.classList.toggle('active', track === 'mgr');
+  var gic = document.getElementById('level-grid-ic'); if (gic) gic.style.display = track === 'ic' ? 'grid' : 'none';
+  var gmgr = document.getElementById('level-grid-mgr'); if (gmgr) gmgr.style.display = track === 'mgr' ? 'grid' : 'none';
   if (!silent) saveProfile();
 }
 
 function selectLevel(lvl, silent) {
   LEVEL = lvl;
-  document.querySelectorAll('.level-btn').forEach(function(b){ b.classList.remove('selected'); });
-  var btn = document.querySelector('.level-btn[data-lvl="' + lvl + '"]');
-  if (btn) btn.classList.add('selected');
-  updateSetupPreview();
+  TRACK = lvl.charAt(0) === 'm' ? 'mgr' : 'ic';
+  var sel = document.getElementById('setup-level-select');
+  if (sel) sel.value = lvl;
   if (!silent) saveProfile();
+}
+
+function selectLevelFromDropdown(val) {
+  selectLevel(val);
 }
 
 function goToAssessment() {
@@ -1123,7 +1120,6 @@ function renderCurrentLevel() {
     html += '</div>';
     html += '<div class="card-body open">';
     html += '<div class="criteria-box">' + data.dims[dim].replace(/\n/g, '<br>') + '</div>';
-    html += '<div class="evidence-label">My Evidence & Examples</div>';
     html += '<textarea class="evidence-area" id="evarea-' + evKey + '" placeholder="Describe specific projects, decisions, or outcomes. Be concrete: \'I led X which resulted in Y\'..." oninput="saveEvidence(\'' + evKey + '\',this.value)">' + evVal + '</textarea>';
     html += '</div></div>';
   });
@@ -1228,7 +1224,6 @@ function renderNextLevel() {
       html += '<div class="behavior-text">';
       html += '<p>' + beh + '</p>';
       html += '<div class="behavior-evidence">';
-      html += '<div class="evidence-label" style="margin-top:6px">My Example</div>';
       html += '<textarea class="evidence-area" style="min-height:60px" placeholder="Specific project or situation where you demonstrated this..." oninput="saveEvidence(\'' + evKey + '\',this.value);autoCheckBehavior(\'' + chkKey + '\',this.value)">' + evVal + '</textarea>';
       html += '</div></div></div>';
     });
@@ -1446,30 +1441,15 @@ function renderGoals() {
 
   var html = '';
   goals.forEach(function(g, idx) {
-    var smart = autoSmart(g);
-    var smartLetters = [
-      { k:'S', label:'Specific' },
-      { k:'M', label:'Measurable' },
-      { k:'A', label:'Achievable' },
-      { k:'R', label:'Relevant to org goals' },
-      { k:'T', label:'Time-bound' }
-    ];
     html += '<div class="goal-card" id="gcard-' + g.id + '">';
     html += '<div class="goal-row">';
     html += '<div class="goal-number">' + (idx + 1) + '</div>';
     html += '<div class="goal-inputs">';
-    html += '<input type="text" class="goal-title" placeholder="Goal title (e.g. Lead end-to-end Checkout redesign for agentic flows)" value="' + escHtml(g.title) + '" oninput="updateGoal(' + g.id + ',\'title\',this.value);refreshSmartRow(' + g.id + ')">';
-    html += '<textarea class="goal-desc" id="gdesc-' + g.id + '" placeholder="What you\'ll own, who you\'ll partner with, what success looks like, and when..." oninput="updateGoal(' + g.id + ',\'desc\',this.value);refreshSmartRow(' + g.id + ')">' + escHtml(g.desc) + '</textarea>';
-    // SMART row
-    html += '<div class="smart-row" id="smart-row-' + g.id + '">';
-    smartLetters.forEach(function(sl) {
-      var isMet = smart[sl.k];
-      html += '<span class="smart-chip' + (isMet ? ' met' : '') + '" title="' + sl.label + '" onclick="toggleSmart(' + g.id + ',\'' + sl.k + '\')">';
-      html += '<span class="s-letter">' + sl.k + '</span>' + sl.label;
-      html += '</span>';
-    });
-    html += '</div>';
-    // Org ladder — hidden from goals page, still stored on goal object for SMART R detection
+    html += '<input type="text" class="goal-title" placeholder="Goal title (e.g. Lead end-to-end Checkout redesign for agentic flows)" value="' + escHtml(g.title) + '" oninput="updateGoal(' + g.id + ',\'title\',this.value)">';
+    html += '<div class="evidence-label" style="margin-top:10px;margin-bottom:4px">Description</div>';
+    html += '<textarea class="goal-desc" id="gdesc-' + g.id + '" placeholder="What you\'ll own, who you\'ll partner with, and by when..." oninput="updateGoal(' + g.id + ',\'desc\',this.value)">' + escHtml(g.desc) + '</textarea>';
+    html += '<div class="evidence-label" style="margin-top:10px;margin-bottom:4px">Success Examples</div>';
+    html += '<textarea class="goal-desc" id="gsuccess-' + g.id + '" placeholder="What does success look like? Include specific outcomes, metrics, or examples that show this goal was achieved..." oninput="updateGoal(' + g.id + ',\'successEx\',this.value)">' + escHtml(g.successEx || '') + '</textarea>';
     html += '</div>';
     html += '<div style="flex-shrink:0;"><button onclick="removeGoal(' + g.id + ')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;padding:4px 6px;line-height:1" title="Remove goal">×</button></div>';
     html += '</div>';
@@ -1503,7 +1483,7 @@ function refreshSmartRow(goalId) {
 
 function addGoal() {
   goalCount++;
-  goals.push({ id: goalCount, title: '', desc: '', smart: {}, org: '' });
+  goals.push({ id: goalCount, title: '', desc: '', successEx: '', smart: {}, org: '' });
   saveGoals();
   renderGoals();
 }
@@ -2340,7 +2320,8 @@ function buildSlackCanvasText() {
     lines.push('');
     filledGoals.forEach(function(g, i) {
       lines.push('**Goal ' + (i + 1) + ': ' + g.title + '**');
-      if (g.desc) lines.push(g.desc);
+      if (g.desc) { lines.push('_Description:_ ' + g.desc); }
+      if (g.successEx) { lines.push('_Success examples:_ ' + g.successEx); }
       var orgGoalLabel = '';
       if (g.orgGoal) {
         var og = ORG_GOALS.find(function(o) { return o.id === g.orgGoal; });
