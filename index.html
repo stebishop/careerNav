@@ -109,6 +109,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .role-desc-box .rdtext { font-size: 13px; color: var(--text); line-height: 1.7; white-space: pre-wrap; }
 .setup-field textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 14px; font-family: inherit; color: var(--text); min-height: 100px; resize: vertical; }
 .setup-field textarea:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,112,186,.12); }
+.setup-field textarea::placeholder { color: #9EB0C8; }
 
 /* ── PROGRESS TRACKER ── */
 .progress-bar-wrap { background: var(--border); border-radius: 4px; height: 6px; margin-top: 4px; }
@@ -325,7 +326,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
 <div class="tabnav">
   <button id="tab-setup" class="active" onclick="showTab('setup')">1. My Profile</button>
   <button id="tab-current" onclick="showTab('current')">2. My Current Level</button>
-  <button id="tab-next" onclick="showTab('next')" style="display:none">3. Getting to Next Level</button>
+  <button id="tab-next" onclick="showTab('next')">3. Getting to Next Level</button>
   <button id="tab-ideal" onclick="showTab('ideal')">4. My Ideal Role</button>
   <button id="tab-goals" onclick="showTab('goals')">5. 2026 Goals</button>
   <button id="tab-summary" onclick="showTab('summary')">6. Career Plan</button>
@@ -336,11 +337,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
 <div id="page-setup" class="page active">
   <div class="section-header">
     <h2>Career Navigation</h2>
-    <p>This tool helps create a personal career plan and connect it to XD goals and the design level criteria. What you share here is private and visible only to you until you decide to share it with your manager.</p>
+    <p>This tool helps create a personal career plan connected to XD goals and the design level criteria. All input is private until you decide to share it with your manager.</p>
   </div>
 
   <!-- Profile bar with editable fields -->
-  <div class="profile-bar" style="flex-wrap:wrap;gap:16px;align-items:flex-end;margin-bottom:16px;">
+  <div class="profile-bar" style="flex-wrap:wrap;column-gap:12px;row-gap:12px;align-items:flex-end;margin-bottom:16px;">
     <div style="flex:1;min-width:130px;">
       <label>Your Name</label>
       <input type="text" id="setup-name" placeholder="e.g. Alex Kim" oninput="saveProfile()">
@@ -371,7 +372,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
     <div>
       <label>Started Role</label>
       <input type="date" id="setup-rolestart" oninput="saveProfile(); updateTimeInRole()" style="border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;background:#fff;cursor:pointer;">
-      <div class="time-in-role-display hidden" id="time-in-role-badge" style="margin-top:4px;">⏱ —</div>
+      <div class="time-in-role-display hidden" id="time-in-role-badge" style="display:none!important;"></div>
     </div>
   </div>
 
@@ -455,16 +456,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
   </div>
 
   <div class="section-header">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:6px;">
-      <h2 id="cur-level-title" style="margin:0">My Current Level</h2>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div class="toggle-sw" id="promo-toggle-sw" onclick="setPromoToggle(this)" style="cursor:pointer">
-          <div class="toggle-track"></div>
-          <div class="toggle-thumb"></div>
-        </div>
-        <span id="promo-toggle-label" style="font-size:13px;color:var(--muted);font-weight:600">Not targeting promotion this year</span>
-      </div>
-    </div>
+    <h2 id="cur-level-title">My Current Level</h2>
     <p id="cur-level-sub">These are the expectations at your level. For each dimension, add evidence of how you're demonstrating this in your work.</p>
   </div>
 
@@ -494,11 +486,25 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
   </div>
 
   <div class="section-header">
-    <h2 id="next-level-title">Getting to the Next Level</h2>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:6px;">
+      <h2 id="next-level-title" style="margin:0">Getting to the Next Level</h2>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="toggle-sw" id="promo-toggle-sw" onclick="setPromoToggle(this)" style="cursor:pointer">
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </div>
+        <span id="promo-toggle-label" style="font-size:13px;color:var(--muted);font-weight:600">Not targeting promotion this year</span>
+      </div>
+    </div>
     <p>[Optional] Add examples for each behavior that distinguishes the next level. Your progress will be reflected in the Career Plan summary.</p>
   </div>
 
-  <div id="transition-cards"></div>
+  <div id="next-locked-notice" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:32px;text-align:center;margin-bottom:16px;">
+    <p style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px;">Not targeting promotion this year</p>
+    <p style="font-size:13px;color:var(--muted);">Toggle "Targeting promotion this year" above to unlock and document your next-level criteria.</p>
+  </div>
+
+  <div id="transition-cards" style="display:none"></div>
 
   <div id="no-transition" style="display:none;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:32px;text-align:center;">
     <p style="font-size:16px;font-weight:700;color:var(--navy)">You're at L10 — Distinguished XD Designer</p>
@@ -579,21 +585,6 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
     <h2>Career Navigation Plan</h2>
     <p>Here's a summary of your 2026 career plan. To share with your manager, click the button below.</p>
   </div>
-
-  <!-- Manager view toggle -->
-  <div class="manager-toggle-wrap">
-    <div class="mtoggle-label">
-      <strong>🔒 Private — only visible to you</strong>
-      <span>Your plan is in draft. Toggle to reveal the manager summary view.</span>
-    </div>
-    <div class="toggle-sw" id="manager-toggle-sw" onclick="toggleManagerView(this)">
-      <div class="toggle-track"></div>
-      <div class="toggle-thumb"></div>
-    </div>
-  </div>
-
-  <!-- Manager summary view (hidden until toggled) -->
-  <div class="manager-view-section" id="manager-view-section"></div>
 
   <div id="summary-content">
     <div style="text-align:center;padding:48px 24px;color:var(--muted);">
@@ -952,10 +943,13 @@ function setPromo(val, silent) {
   var tabNext = document.getElementById('tab-next');
   if (sw) sw.classList.toggle('on', val === true);
   if (lbl) {
-    lbl.textContent = val ? 'Yes, targeting promotion in 2026' : 'Not targeting this year';
+    lbl.textContent = val ? 'Targeting promotion this year' : 'Not targeting promotion this year';
     lbl.style.color = val ? 'var(--green)' : 'var(--muted)';
   }
-  if (tabNext) tabNext.style.display = val ? 'block' : 'none';
+  var locked = document.getElementById('next-locked-notice');
+  var cards = document.getElementById('transition-cards');
+  if (locked) locked.style.display = val ? 'none' : 'block';
+  if (cards) cards.style.display = val ? 'block' : 'none';
   if (!silent) saveProfile();
 }
 
@@ -1172,6 +1166,12 @@ function renderNextLevel() {
     document.getElementById('next-disp-tir').textContent = nextTirText;
     nextTirWrap.style.display = 'block';
   } else if (nextTirWrap) { nextTirWrap.style.display = 'none'; }
+  // Sync locked state
+  var locked = document.getElementById('next-locked-notice');
+  var cards = document.getElementById('transition-cards');
+  if (locked) locked.style.display = PROMO_TARGET ? 'none' : 'block';
+  if (cards) cards.style.display = PROMO_TARGET ? 'block' : 'none';
+  if (!PROMO_TARGET) return; // Don't render cards when not targeting
 
   var curData = getLevelData();
   var curBadge = document.getElementById('next-disp-cur');
@@ -1651,12 +1651,15 @@ function renderSummary() {
 
   // BUILD HTML
   var h = '';
-
-  // Block 1 — Current State
-  h += '<div class="summary-block"><h3>Current State</h3>';
   var refS = parseInt(profile.ref_strengths || satisfaction);
   var refAl = parseInt(profile.ref_align || satisfaction);
   var refLe = parseInt(profile.ref_learning || satisfaction);
+
+  // Block 1 — Current Role
+  h += '<div class="summary-block"><h3>Current Role</h3>';
+  if (roledesc) {
+    h += '<div class="summary-row"><span class="summary-key">Role Description</span><span class="summary-val" style="white-space:pre-wrap;font-size:13px;line-height:1.7;color:var(--text)">' + escHtml(roledesc) + '</span></div>';
+  }
   var reflectionRows = [
     { label: 'Strengths fit', val: refS },
     { label: 'Career alignment', val: refAl },
@@ -1672,117 +1675,58 @@ function renderSummary() {
     h += '</div>';
   });
   h += '</span></div>';
-  if (roledesc) h += '<div class="summary-row"><span class="summary-key">Role Description</span><span class="summary-val" style="white-space:pre-wrap;font-size:12px;color:var(--muted)">' + escHtml(roledesc) + '</span></div>';
   h += '</div>';
 
-  // Block 2 — Evidence
+  // Block 2 — Current Level Evidence (full text per dimension)
   h += '<div class="summary-block"><h3>Current Level Evidence</h3>';
   if (filledEvidence === 0) {
     h += '<p style="font-size:13px;color:var(--muted);font-style:italic">No evidence added yet — go to My Current Level to add examples for each dimension.</p>';
   } else {
-    h += '<p style="font-size:13px;margin-bottom:12px">Evidence documented in <strong>' + filledEvidence + ' of ' + dims.length + '</strong> competency dimensions.</p>';
-    h += '<div style="display:flex;flex-wrap:wrap;gap:8px;">';
     dims.forEach(function(dim) {
       var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g, '_');
-      var filled = (loadEvidence(evKey) || '').trim().length > 20;
-      var ic = DIM_ICONS[dim] || { icon: '◆', color: '#EDE9FE', text: '#4C1D95' };
-      h += '<span style="padding:5px 11px;border-radius:20px;font-size:11px;font-weight:700;background:' + (filled ? ic.color : '#F1F5F9') + ';color:' + (filled ? ic.text : '#94A3B8') + '">' + ic.icon + ' ' + dim + (filled ? ' ✓' : '') + '</span>';
+      var evVal = (loadEvidence(evKey) || '').trim();
+      if (evVal.length > 20) {
+        h += '<div style="margin-bottom:16px;">';
+        h += '<div style="font-size:12px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">' + dim + '</div>';
+        h += '<div style="font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap">' + escHtml(evVal) + '</div>';
+        h += '</div>';
+      }
     });
-    h += '</div>';
   }
   h += '</div>';
 
-  // Block 3 — Next Level Readiness
-  if (next && totalBeh > 0) {
-    h += '<div class="summary-block"><h3>Readiness for Next Level</h3>';
-    h += '<div class="readiness-stat"><div class="readiness-pct-big" style="color:' + readColor + '">' + readinessPct + '%</div>';
-    h += '<div class="readiness-sub">of behaviors demonstrated for ' + (nextData ? nextData.title : 'next level') + '<small>' + checkedBeh + ' of ' + totalBeh + ' transition behaviors checked</small></div></div>';
-    h += '<div class="progress-bar-wrap" style="margin-bottom:14px"><div class="progress-bar" style="width:' + readinessPct + '%"></div></div>';
-    if (Object.keys(dimReadiness).length > 0) {
-      h += '<p style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Demonstrated by Dimension</p>';
-      h += '<div style="display:flex;flex-wrap:wrap;gap:7px;">';
-      Object.keys(dimReadiness).forEach(function(dim) {
-        var ic = DIM_ICONS[dim] || { icon: '◆', color: '#EDE9FE', text: '#4C1D95' };
-        h += '<span style="padding:5px 11px;border-radius:20px;font-size:11px;font-weight:700;background:' + ic.color + ';color:' + ic.text + '">' + ic.icon + ' ' + dim + ' ' + dimReadiness[dim] + '</span>';
-      });
-      h += '</div>';
-    }
+  // Block 3 — Ideal Role (description only, no fit measurement)
+  if (idealDesc) {
+    h += '<div class="summary-block"><h3>Ideal Role</h3>';
+    h += '<div style="font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap">' + escHtml(idealDesc) + '</div>';
     h += '</div>';
   }
 
-  // Block 4 — Ideal Role
-  if (idealDesc) {
-    h += '<div class="summary-block"><h3>Ideal Role Vision</h3>';
-    h += '<div class="summary-row"><span class="summary-key">Description</span><span class="summary-val" style="white-space:pre-wrap;font-size:12px;line-height:1.7;color:var(--muted)">' + escHtml(idealDesc) + '</span></div>';
-    h += '<div class="summary-row"><span class="summary-key">Current Fit</span><span class="summary-val">';
-    h += '<span style="font-size:22px;font-weight:900;color:var(--navy)">' + idealFit + '%</span>';
-    h += '<div class="fit-pct-bar-track" style="width:200px;margin-top:6px"><div class="fit-pct-bar-fill" style="width:' + idealFit + '%"></div></div>';
-    h += '<p style="font-size:12px;color:var(--muted);margin-top:4px">' + (100 - idealFit) + '% gap to close</p>';
-    h += '</span></div></div>';
-  }
-
-  // Block 5 — Goals
-  if (goalSummaries.length > 0) {
+  // Block 4 — Goals (full content, no pills)
+  var activeGoals = goals.filter(function(g) { return g.title && g.title.trim(); });
+  if (activeGoals.length > 0) {
     h += '<div class="summary-block"><h3>2026 Goals</h3>';
-    goalSummaries.forEach(function(g, i) {
-      h += '<div class="goal-sum-card">';
-      h += '<div class="goal-sum-title"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--navy);color:#fff;border-radius:50%;font-size:11px;font-weight:700;flex-shrink:0">' + (i + 1) + '</span>' + escHtml(g.title) + '</div>';
-      if (g.desc) h += '<div class="goal-sum-desc">' + escHtml(g.desc) + '</div>';
-      if (g.dims && g.dims.length > 0) {
-        h += '<div style="display:flex;flex-wrap:wrap;gap:5px;">';
-        g.dims.forEach(function(dim) {
-          var s = DIM_PILL_STYLES[dim] || { bg: '#E2E8F0', text: '#475569', icon: '◆' };
-          h += '<span style="padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;background:' + s.bg + ';color:' + s.text + '">' + s.icon + ' ' + dim + '</span>';
-        });
+    activeGoals.forEach(function(g, i) {
+      h += '<div class="goal-sum-card" style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);">';
+      h += '<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;">';
+      h += '<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--navy);color:#fff;border-radius:50%;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px">' + (i + 1) + '</span>';
+      h += '<span style="font-size:14px;font-weight:700;color:var(--navy)">' + escHtml(g.title) + '</span>';
+      h += '</div>';
+      if (g.desc) {
+        h += '<div style="margin-left:32px;margin-bottom:8px;">';
+        h += '<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px">Description</div>';
+        h += '<div style="font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap">' + escHtml(g.desc) + '</div>';
+        h += '</div>';
+      }
+      if (g.successEx) {
+        h += '<div style="margin-left:32px;">';
+        h += '<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px">Success Examples</div>';
+        h += '<div style="font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap">' + escHtml(g.successEx) + '</div>';
         h += '</div>';
       }
       h += '</div>';
     });
     h += '</div>';
-  }
-
-  // Block 6 — Narrative
-  h += '<div class="summary-block"><h3>Career Plan Narrative</h3>';
-  h += '<div class="narrative-card">' + escHtml(narrative) + '</div>';
-  h += '</div>';
-
-  // Block 7 — Quarterly Roadmap
-  var activeGoals = goals.filter(function(g){ return g.title && g.title.trim(); });
-  if (activeGoals.length > 0 || (tKey && IC_TRANSITIONS[tKey])) {
-    h += '<div class="summary-block"><h3>2026 Quarterly Roadmap</h3>';
-    // Distribute goals across quarters
-    var quarters = [[], [], [], []];
-    activeGoals.forEach(function(g, i) { quarters[i % 4].push(g); });
-    // Get top transition behaviors for each quarter (if promotion path)
-    var topBehaviors = [];
-    if (tKey && IC_TRANSITIONS[tKey]) {
-      var trans = IC_TRANSITIONS[tKey];
-      Object.keys(trans.dims).forEach(function(dim) {
-        trans.dims[dim].forEach(function(beh, i) {
-          var ck = 'chk_' + TRACK + '_' + tKey + '_' + dim.replace(/\s+/g,'_') + '_' + i;
-          if (!loadCheck(ck)) topBehaviors.push({ dim: dim, beh: beh });
-        });
-      });
-      topBehaviors = topBehaviors.slice(0, 4);
-    }
-    h += '<div class="roadmap-grid">';
-    ['Q1','Q2','Q3','Q4'].forEach(function(q, qi) {
-      h += '<div class="roadmap-q">';
-      h += '<h4>' + q + ' 2026</h4>';
-      // Goals in this quarter
-      quarters[qi].forEach(function(g) {
-        h += '<div class="roadmap-item"><div class="roadmap-dot" style="background:var(--blue)"></div><span>' + escHtml(g.title) + '</span></div>';
-      });
-      // Promotion behavior to work on
-      if (topBehaviors[qi]) {
-        h += '<div class="roadmap-item" style="opacity:.75"><div class="roadmap-dot" style="background:var(--sky)"></div><span style="font-style:italic">' + escHtml(topBehaviors[qi].dim + ': ' + topBehaviors[qi].beh.substring(0, 55) + (topBehaviors[qi].beh.length > 55 ? '…' : '')) + '</span></div>';
-      }
-      // Q-specific milestone
-      var milestones = ['Set baselines & kick off Q1 deliverables', 'Mid-year check-in ready for manager 1:1', 'Evidence documented for all dimensions', 'Year-end: plan updated for 2027'];
-      h += '<div class="roadmap-item" style="opacity:.55"><div class="roadmap-dot" style="background:var(--muted)"></div><span style="font-size:10px;color:var(--muted)">' + milestones[qi] + '</span></div>';
-      h += '</div>';
-    });
-    h += '</div></div>';
   }
 
   document.getElementById('summary-content').innerHTML = h;
