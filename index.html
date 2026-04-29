@@ -2058,20 +2058,19 @@ function goDeeper() {
   var levelTitle = curData.title;
 
   var goalLines = goals.filter(function(g) { return g.title && g.title.trim(); }).map(function(g, i) {
-    var s = autoSmart(g);
-    var smartPct = Math.round(Object.values(s).filter(Boolean).length / 5 * 100);
-    return 'Goal ' + (i+1) + ': ' + g.title + (g.desc ? '\nDetail: ' + g.desc : '') + '\nSMART score: ' + smartPct + '%';
+    var line = 'Goal ' + (i+1) + ': ' + g.title;
+    if (g.desc && g.desc.trim()) line += '\nDescription: ' + g.desc.trim();
+    if (g.successEx && g.successEx.trim()) line += '\nSuccess looks like: ' + g.successEx.trim();
+    return line;
   }).join('\n\n');
 
-  var prompt = '# PayPal XD Design Goal Assessment\n\n';
-  prompt += 'Please use the design-goal-assessment skill to review these goals.\n\n';
+  var prompt = 'review my goals\n\n';
   prompt += '## Designer\n';
   prompt += 'Name: ' + name + '\n';
   prompt += 'Role: ' + role + '\n';
   prompt += 'Level: ' + levelTitle + '\n\n';
   prompt += '## 2026 Goals\n\n';
   prompt += goalLines || '(No goals entered yet)';
-  prompt += '\n\n---\nPlease assess each goal against SMART criteria, PayPal XD Career Framework dimensions, and our team priorities (AI-native design, craft quality, cross-functional influence, systems thinking). Provide specific, actionable feedback on how to strengthen each goal.';
 
   var modal = document.createElement('div');
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
@@ -2096,28 +2095,36 @@ function goDeeper() {
 function buildGoDeeperModal(copied, fallbackPrompt) {
   var h = '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'
     + '<div style="width:44px;height:44px;background:linear-gradient(135deg,#4F46E5,#7C3AED);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">✦</div>'
-    + '<div><h3 style="margin:0;font-size:17px;color:#4F46E5">Go Deeper with design-goal-assessment</h3>'
-    + '<p style="margin:4px 0 0;font-size:12px;color:#64748B">Get structured AI feedback on your goals</p></div></div>';
+    + '<div><h3 style="margin:0;font-size:17px;color:#4F46E5">Review Goals with AI</h3>'
+    + '<p style="margin:4px 0 0;font-size:12px;color:#64748B">The design-goal-assessment skill will auto-start in Cowork</p></div></div>';
 
   if (copied) {
     h += '<div style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:14px 16px;margin-bottom:18px">'
       + '<p style="margin:0;font-size:13px;color:#15803D;font-weight:700">✓ Prompt copied to clipboard</p>'
-      + '<p style="margin:6px 0 0;font-size:12px;color:#166534">Your goal data is ready to paste into Cowork or Claude.ai.</p></div>';
+      + '<p style="margin:6px 0 0;font-size:12px;color:#166534">Your goals are formatted and ready to paste.</p></div>';
   } else {
     h += '<div style="background:#FEF9C3;border:1px solid #FDE047;border-radius:8px;padding:14px 16px;margin-bottom:12px">'
-      + '<p style="margin:0;font-size:13px;color:#854D0E;font-weight:700">⚠ Copy the prompt below</p></div>'
+      + '<p style="margin:0;font-size:13px;color:#854D0E;font-weight:700">⚠ Copy the prompt below manually</p></div>'
       + '<textarea style="width:100%;height:90px;font-size:10px;border:1px solid #E2E8F0;border-radius:6px;padding:8px;resize:vertical;margin-bottom:12px;font-family:monospace" onclick="this.select()">' + (fallbackPrompt||'').replace(/</g,'&lt;') + '</textarea>';
   }
 
-  h += '<div style="background:#EEF2FF;border:1px solid #C7D2FE;border-radius:8px;padding:12px 16px;margin-bottom:18px;font-size:12px;color:#3730A3;">'
-    + '<strong>In Cowork:</strong> Open a new chat, type <code style="background:#fff;padding:1px 5px;border-radius:3px">/design-goal-assessment</code>, then paste your goals.'
-    + '<br><strong>Or:</strong> Open Claude.ai and paste the prompt directly for a full analysis.</div>';
+  h += '<div style="background:#EEF2FF;border:1px solid #C7D2FE;border-radius:8px;padding:14px 16px;margin-bottom:20px">'
+    + '<p style="margin:0 0 10px;font-size:12px;font-weight:700;color:#3730A3">How to use in Cowork</p>'
+    + '<div style="display:flex;flex-direction:column;gap:8px">'
+    + '<div style="display:flex;align-items:flex-start;gap:10px;font-size:12px;color:#3730A3">'
+    + '<div style="width:20px;height:20px;background:#4F46E5;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">1</div>'
+    + '<span>Open Cowork and start a new chat in the <strong>Career navigation</strong> project</span></div>'
+    + '<div style="display:flex;align-items:flex-start;gap:10px;font-size:12px;color:#3730A3">'
+    + '<div style="width:20px;height:20px;background:#4F46E5;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">2</div>'
+    + '<span>Paste your copied goals — the <strong>design-goal-assessment</strong> skill fires automatically</span></div>'
+    + '<div style="display:flex;align-items:flex-start;gap:10px;font-size:12px;color:#3730A3">'
+    + '<div style="width:20px;height:20px;background:#4F46E5;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">3</div>'
+    + '<span>Get a scored assessment with specific suggestions for each goal</span></div>'
+    + '</div></div>';
 
   h += '<div style="display:flex;gap:10px">'
-    + '<button onclick="window.open(\'https://claude.ai/new\',\'_blank\');this.closest(\'[style*=fixed]\').remove()" '
-    + 'style="flex:1;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">Open Claude.ai →</button>'
     + '<button onclick="this.closest(\'[style*=fixed]\').remove()" '
-    + 'style="background:#fff;border:1px solid #E2E8F0;color:#475569;border-radius:8px;padding:12px 18px;font-size:13px;cursor:pointer">Cancel</button>'
+    + 'style="flex:1;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">Done</button>'
     + '</div>';
   return h;
 }
