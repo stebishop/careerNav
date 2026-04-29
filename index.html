@@ -607,7 +607,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
 
   <div id="summary-footer" class="page-footer-actions" style="justify-content:space-between;display:none;">
     <button class="btn-secondary" onclick="goDeeper()">✦ Review Summary</button>
-    <button class="btn-continue" onclick="window.print()">⬡ Export Plan</button>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-secondary" onclick="shareWithManager()" style="background:#4A154B;color:#fff;border-color:#4A154B;">✉ Share with Manager</button>
+      <button class="btn-continue" onclick="window.print()">⬡ Export Plan</button>
+    </div>
   </div>
 </div>
 
@@ -2191,6 +2194,243 @@ function buildGoDeeperModal(copied, fallbackPrompt) {
     + 'style="background:#fff;border:1px solid #E2E8F0;color:#475569;border-radius:8px;padding:12px 18px;font-size:13px;cursor:pointer">Cancel</button>'
     + '</div>';
   return h;
+}
+
+// ── SHARE WITH MANAGER ──────────────────────────────────────────
+function buildSlackCanvasText() {
+  var profile = load('profile', {});
+  var name = profile.name || 'Designer';
+  var role = profile.role || '—';
+  var roledesc = profile.roledesc || '';
+  var refS = parseInt(profile.ref_strengths || 5);
+  var refAl = parseInt(profile.ref_align || 5);
+  var refLe = parseInt(profile.ref_learning || 5);
+  var tir = getTimeInRoleText() || null;
+  var curData = getLevelData();
+  var levelTitle = curData.title;
+  var dims = Object.keys(curData.dims);
+  var ir = load('idealrole', {});
+  var idealDesc = ir.desc || '';
+  var today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  // Evidence
+  var evidenceDims = [];
+  var missingDims = [];
+  dims.forEach(function(dim) {
+    var evKey = 'cur_' + TRACK + '_' + LEVEL + '_' + dim.replace(/\s+/g, '_');
+    var ev = (loadEvidence(evKey) || '').trim();
+    if (ev.length > 20) evidenceDims.push({ dim: dim, text: ev });
+    else missingDims.push(dim);
+  });
+
+  // Next level readiness
+  var next = getNextLevel();
+  var nextData = next && TRACK === 'ic' ? IC_LEVELS[next] : null;
+  var tKey = getTransitionKey();
+  var checkedBeh = 0, totalBeh = 0;
+  var dimReadiness = {};
+  var transitionEvidence = {};
+  if (tKey && IC_TRANSITIONS[tKey]) {
+    var trans = IC_TRANSITIONS[tKey];
+    Object.keys(trans.dims).forEach(function(dim) {
+      var dimCk = 0;
+      trans.dims[dim].forEach(function(beh, i) {
+        totalBeh++;
+        var ck = 'chk_' + TRACK + '_' + tKey + '_' + dim.replace(/\s+/g, '_') + '_' + i;
+        var evK = 'trans_' + TRACK + '_' + tKey + '_' + dim.replace(/\s+/g, '_') + '_' + i;
+        if (loadCheck(ck)) { checkedBeh++; dimCk++; }
+        var ev = (loadEvidence(evK) || '').trim();
+        if (ev) {
+          if (!transitionEvidence[dim]) transitionEvidence[dim] = [];
+          transitionEvidence[dim].push({ beh: beh, ev: ev });
+        }
+      });
+      if (dimCk > 0) dimReadiness[dim] = dimCk + '/' + trans.dims[dim].length;
+    });
+  }
+  var readinessPct = totalBeh > 0 ? Math.round(checkedBeh / totalBeh * 100) : 0;
+
+  // Goals
+  var filledGoals = goals.filter(function(g) { return g.title && g.title.trim(); });
+
+  // Build markdown
+  var lines = [];
+  lines.push('# 2026 Career Navigation Plan');
+  lines.push('**' + name + '** · ' + levelTitle + ' · ' + role + (tir ? ' · ' + tir + ' in role' : '') + '  ');
+  lines.push('_Generated ' + today + '_');
+  lines.push('');
+  lines.push('---');
+  lines.push('');
+
+  // Current State
+  lines.push('## Current State');
+  lines.push('');
+  lines.push('**Role Reflection**');
+  lines.push('- Strengths fit: **' + refS + '/10** — ' + getSatisfactionLabel(refS));
+  lines.push('- Career alignment: **' + refAl + '/10** — ' + getSatisfactionLabel(refAl));
+  lines.push('- Learning room: **' + refLe + '/10** — ' + getSatisfactionLabel(refLe));
+  if (roledesc) {
+    lines.push('');
+    lines.push('**Role Description**');
+    lines.push(roledesc);
+  }
+  lines.push('');
+  lines.push('---');
+  lines.push('');
+
+  // Current Level Evidence
+  lines.push('## Current Level Evidence (' + levelTitle + ')');
+  lines.push('');
+  if (evidenceDims.length === 0) {
+    lines.push('_No evidence added yet._');
+  } else {
+    evidenceDims.forEach(function(e) {
+      lines.push('**' + e.dim + '**');
+      lines.push(e.text);
+      lines.push('');
+    });
+    if (missingDims.length > 0) {
+      lines.push('_Not yet documented: ' + missingDims.join(', ') + '_');
+    }
+  }
+  lines.push('');
+  lines.push('---');
+  lines.push('');
+
+  // Next Level
+  if (next && nextData) {
+    lines.push('## Readiness for ' + nextData.title);
+    lines.push('');
+    lines.push('**' + readinessPct + '%** of transition behaviors demonstrated (' + checkedBeh + ' of ' + totalBeh + ')');
+    if (Object.keys(dimReadiness).length > 0) {
+      lines.push('');
+      lines.push('Demonstrated by dimension:');
+      Object.keys(dimReadiness).forEach(function(dim) {
+        lines.push('- **' + dim + '**: ' + dimReadiness[dim]);
+      });
+    }
+    if (Object.keys(transitionEvidence).length > 0) {
+      lines.push('');
+      Object.keys(transitionEvidence).forEach(function(dim) {
+        lines.push('**' + dim + ' examples**');
+        transitionEvidence[dim].forEach(function(t) {
+          lines.push('- _' + t.beh + '_: ' + t.ev);
+        });
+        lines.push('');
+      });
+    }
+    lines.push('');
+    lines.push('---');
+    lines.push('');
+  }
+
+  // Ideal Role
+  if (idealDesc) {
+    lines.push('## My Ideal Role');
+    lines.push('');
+    lines.push(idealDesc);
+    lines.push('');
+    lines.push('---');
+    lines.push('');
+  }
+
+  // Goals
+  if (filledGoals.length > 0) {
+    lines.push('## 2026 Goals');
+    lines.push('');
+    filledGoals.forEach(function(g, i) {
+      lines.push('**Goal ' + (i + 1) + ': ' + g.title + '**');
+      if (g.desc) lines.push(g.desc);
+      var orgGoalLabel = '';
+      if (g.orgGoal) {
+        var og = ORG_GOALS.find(function(o) { return o.id === g.orgGoal; });
+        if (og && og.id) orgGoalLabel = og.label;
+      }
+      if (orgGoalLabel) lines.push('_Org goal: ' + orgGoalLabel + '_');
+      lines.push('');
+    });
+    lines.push('---');
+    lines.push('');
+  }
+
+  // Footer
+  lines.push('_PayPal XD Career Navigation Tool · Shared for manager review_');
+
+  return lines.join('\n');
+}
+
+function shareWithManager() {
+  var text = buildSlackCanvasText();
+  var copied = false;
+  try {
+    navigator.clipboard.writeText(text).then(function() {}).catch(function() {});
+    copied = true;
+  } catch(e) {}
+
+  // Also try sync copy
+  try {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    copied = true;
+  } catch(e) {}
+
+  var existing = document.getElementById('share-manager-modal');
+  if (existing) existing.remove();
+
+  var modal = document.createElement('div');
+  modal.id = 'share-manager-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+
+  var box = document.createElement('div');
+  box.style.cssText = 'background:#fff;border-radius:14px;padding:32px;max-width:520px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)';
+
+  var stepStyle = 'display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid #F1F5F9';
+  var numStyle = 'background:#003087;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px';
+
+  var content = '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'
+    + '<div style="width:44px;height:44px;background:#4A154B;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px">✉</div>'
+    + '<div><h3 style="margin:0;font-size:17px;color:#003087">Share with Manager via Slack</h3>'
+    + '<p style="margin:4px 0 0;font-size:12px;color:#64748B">3 steps · takes about 1 minute</p></div></div>';
+
+  if (copied) {
+    content += '<div style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:12px 16px;margin-bottom:20px">'
+      + '<p style="margin:0;font-size:13px;color:#15803D;font-weight:700">✓ Career plan copied to clipboard</p></div>';
+  } else {
+    content += '<div style="margin-bottom:16px"><textarea id="share-fallback-ta" style="width:100%;height:80px;font-size:10px;border:1px solid #E2E8F0;border-radius:6px;padding:8px;resize:vertical;font-family:monospace" onclick="this.select()">' + text.replace(/</g,'&lt;') + '</textarea>'
+      + '<p style="font-size:12px;color:#854D0E;margin:4px 0 0">⚠ Auto-copy blocked — select all text above and copy manually.</p></div>';
+  }
+
+  content += '<div style="' + stepStyle + '">'
+    + '<div style="' + numStyle + '">1</div>'
+    + '<div><p style="margin:0;font-size:13px;font-weight:700;color:#1a1a2e">Open Slack and start a Canvas</p>'
+    + '<p style="margin:4px 0 0;font-size:12px;color:#64748B">In a DM with your manager, click <strong>+</strong> → <strong>Create a canvas</strong></p></div></div>';
+
+  content += '<div style="' + stepStyle + '">'
+    + '<div style="' + numStyle + '">2</div>'
+    + '<div><p style="margin:0;font-size:13px;font-weight:700;color:#1a1a2e">Paste your career plan</p>'
+    + '<p style="margin:4px 0 0;font-size:12px;color:#64748B">Paste with <strong>Cmd+V</strong> (Mac) or <strong>Ctrl+V</strong> (Windows). Slack formats it automatically.</p></div></div>';
+
+  content += '<div style="display:flex;align-items:flex-start;gap:14px;padding:12px 0;margin-bottom:20px">'
+    + '<div style="' + numStyle + '">3</div>'
+    + '<div><p style="margin:0;font-size:13px;font-weight:700;color:#1a1a2e">Share the Canvas</p>'
+    + '<p style="margin:4px 0 0;font-size:12px;color:#64748B">Click <strong>Share</strong> → share with your manager. They can comment inline and suggest edits.</p></div></div>';
+
+  content += '<div style="display:flex;gap:10px">'
+    + '<button onclick="window.open(\'https://app.slack.com\',\'_blank\')" '
+    + 'style="flex:1;background:#4A154B;color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">Open Slack →</button>'
+    + '<button onclick="document.getElementById(\'share-manager-modal\').remove()" '
+    + 'style="background:#fff;border:1px solid #E2E8F0;color:#475569;border-radius:8px;padding:12px 18px;font-size:13px;cursor:pointer">Close</button>'
+    + '</div>';
+
+  box.innerHTML = content;
+  modal.appendChild(box);
+  modal.addEventListener('click', function(e) { if (e.target === modal) modal.remove(); });
+  document.body.appendChild(modal);
 }
 
 // ── INIT ──────────────────────────────────────────
